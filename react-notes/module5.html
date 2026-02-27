@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 5: Component Patterns & Modularity - React Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-lg">5</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Component Patterns & Modularity</h1>
+                    <p class="text-xs text-slate-400">React Masterclass Module 5</p>
+                </div>
+            </div>
+            <a href="./syllabus.html" class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors border border-white/20">
+                ← Back to Roadmap
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Intro Note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+            <p class="text-sm leading-relaxed">
+                <strong>📝 How to use this guide:</strong> This module transitions from "how to write React" to "how to build scalable React applications." You will learn enterprise-level patterns like Feature-based architecture, proper form management, avoiding wrapper hell, and handling crashes gracefully. Expect heavy interview questions on Error Boundaries and Controlled vs. Uncontrolled inputs.
+            </p>
+        </div>
+
+        <!-- Topic 1 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                1. Folder Structure & Clean Architecture Best Practices
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Clean architecture in React is the practice of organizing code logically—often grouped by feature or domain rather than file type—to make the codebase scalable, maintainable, and predictable for large teams.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>File-type Organization (Legacy):</strong> Grouping all components in one folder, all hooks in another. This becomes unmanageable as the app grows.</li>
+                        <li><strong>Feature-based Organization (Modern):</strong> Grouping code by its domain (e.g., <code>/features/auth</code>, <code>/features/cart</code>). Everything related to auth (components, hooks, API calls) lives together.</li>
+                        <li>Shared, highly reusable pieces (like a generic Button component or utility functions) live in a global <code>/shared</code> or <code>/common</code> directory.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>src/
+├── assets/         # Global images, fonts
+├── components/     # Global/Shared UI (Button, Input, Layout)
+├── features/       # Feature-specific modules
+│   ├── auth/       # Domain: Authentication
+│   │   ├── components/  # LoginForm, RegisterForm
+│   │   ├── hooks/       # useAuth, useLogin
+│   │   ├── api/         # login(), logout()
+│   │   └── index.js     # Public API for this feature
+│   └── cart/       # Domain: Shopping Cart
+├── hooks/          # Global hooks (useWindowSize, useTheme)
+├── utils/          # Global helpers (formatDate, calculateTax)
+└── App.jsx         # Root component</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Enterprise applications with multiple teams. Team A can work exclusively inside <code>features/auth</code> without colliding with Team B working in <code>features/billing</code>.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Code is highly discoverable. Deleting a feature is as simple as deleting one folder. Reduces merge conflicts.<br>
+                    <strong>Disadvantages:</strong> Requires strict discipline to enforce. Developers might accidentally create cross-feature dependencies if not careful.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is a "Barrel File" (index.js) in feature-based architecture?</strong><br>
+                    <strong>A:</strong> A barrel file is an <code>index.js</code> at the root of a feature folder that exports ONLY the components or hooks that other parts of the app are allowed to use. It acts as a public API for that feature, hiding internal helper functions and enforcing strict encapsulation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                2. Controlled vs. Uncontrolled Components (Forms)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>A Controlled Component is an input where React state acts as the "single source of truth". An Uncontrolled Component is an input where the DOM itself maintains its own state, which React accesses via a `ref`.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Controlled:</strong> Uses <code>value={state}</code> and <code>onChange={e => setState(e.target.value)}</code>. React knows the exact value on every single keystroke.</li>
+                        <li><strong>Uncontrolled:</strong> Uses a <code>useRef</code> to target the DOM node directly. You only read the value when you actually need it (e.g., when the user clicks "Submit"). Uses <code>defaultValue</code> for initial state.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// 1. Controlled Component (React manages state)
+const ControlledForm = () => {
+  const [email, setEmail] = useState('');
+  return (
+    &lt;input 
+      value={email} 
+      onChange={(e) => setEmail(e.target.value)} 
+    /&gt;
+  );
+};
+
+// 2. Uncontrolled Component (DOM manages state)
+const UncontrolledForm = () => {
+  const emailRef = useRef(null);
+  const handleSubmit = () => alert(emailRef.current.value);
+  
+  return (
+    &lt;&gt;
+      &lt;input ref={emailRef} defaultValue="test@test.com" /&gt;
+      &lt;button onClick={handleSubmit}&gt;Submit&lt;/button&gt;
+    &lt;/&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Controlled:</strong> Instant form validation (e.g., password strength meter), dynamically disabling submit buttons, or searching a list as the user types.</li>
+                        <li><strong>Uncontrolled:</strong> Integrating React with non-React libraries (like a legacy jQuery plugin) or building very simple, massive forms where you don't want re-renders on every keystroke.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Controlled Adv:</strong> Highly predictable and powerful for dynamic UI updates. <strong>Disadv:</strong> Re-renders the component on every single keystroke.<br>
+                    <strong>Uncontrolled Adv:</strong> High performance (no constant re-renders). <strong>Disadv:</strong> Hard to do live validation. (Note: React Hook Form solves this by combining the best of both worlds).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why does React show a warning: "You provided a `value` prop to a form field without an `onChange` handler"?</strong><br>
+                    <strong>A:</strong> If you provide a <code>value</code> prop without an <code>onChange</code> handler, you are creating a Controlled component but giving it no way to update. React locks the input, making it strictly read-only. The user won't be able to type anything.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                3. Higher-Order Components (HOCs) vs. Custom Hooks
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>A Higher-Order Component (HOC) is a function that takes a component and returns a new component, injecting additional props or logic. A Custom Hook is a function that extracts stateful logic to be reused inside functional components.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Before Hooks existed (React < 16.8), HOCs were the primary way to share logic between Class components (e.g., Redux's <code>connect()</code> or Router's <code>withRouter()</code>).</li>
+                        <li>HOCs literally wrap your component in another component, augmenting it with new props.</li>
+                        <li>Custom Hooks completely replaced HOCs for sharing <em>stateful logic</em> because they don't require altering the component hierarchy.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// 1. The Old Way: HOC (Wrapper)
+const withAuth = (WrappedComponent) => {
+  return (props) => {
+    const isAuth = checkAuth();
+    if (!isAuth) return &lt;Redirect to="/login" /&gt;;
+    return &lt;WrappedComponent {...props} user={getUser()} /&gt;;
+  };
+};
+const ProtectedProfile = withAuth(UserProfile);
+
+// 2. The Modern Way: Custom Hook
+const UserProfile = () => {
+  const { user, isAuth } = useAuth(); // No wrappers needed!
+  if (!isAuth) return &lt;Redirect to="/login" /&gt;;
+  return &lt;div&gt;Welcome, {user.name}&lt;/div&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Hooks:</strong> Used for 95% of logic sharing (fetching, themes, auth state, window dimensions).</li>
+                        <li><strong>HOCs:</strong> Still occasionally used for global cross-cutting concerns that strictly require wrapping the component, such as Error Boundaries (<code>withErrorBoundary</code>) or Performance Tracking wrappers.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>HOC Disadvantages:</strong> Causes "Wrapper Hell" (deeply nested component trees in DevTools). Leads to prop name collisions (two HOCs injecting a prop named `data`).<br>
+                    <strong>Hooks Advantages:</strong> Flattens the component tree. Clearer origin of data (you can see exactly where <code>user</code> came from: <code>useAuth()</code>).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Are HOCs completely dead in modern React?</strong><br>
+                    <strong>A:</strong> No. While Custom Hooks replaced them for logic sharing, HOCs are still useful when you need to intercept rendering logic from the outside. For example, <code>React.memo()</code> is technically a Higher-Order Component because it wraps a component to control its re-render behavior based on props.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 4 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                4. Error Boundaries (Handling app crashes gracefully)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Error Boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of crashing the entire application.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Currently, there is <strong>no Functional Component/Hook equivalent</strong> for Error Boundaries. They MUST be written as Class components.</li>
+                        <li>They rely on two lifecycle methods: <code>static getDerivedStateFromError()</code> (to render fallback UI) and <code>componentDidCatch()</code> (to log the error to a service like Sentry).</li>
+                        <li>They only catch errors during rendering, in lifecycle methods, and in constructors of the whole tree below them.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  // 1. Update state so the next render shows the fallback UI
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  // 2. Log the error to an error reporting service
+  componentDidCatch(error, errorInfo) {
+    logErrorToMyService(error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return &lt;h1&gt;Something went wrong in this widget.&lt;/h1&gt;;
+    }
+    return this.props.children; 
+  }
+}
+
+// Usage:
+// &lt;ErrorBoundary&gt; &lt;ComplexChartWidget /&gt; &lt;/ErrorBoundary&gt;</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Wrapping the root <code>&lt;App /&gt;</code> component to prevent the "White Screen of Death" for users.</li>
+                        <li>Wrapping individual, unreliable widgets (like a 3rd party charting library). If the chart crashes, the rest of the dashboard remains fully functional.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Prevents total app failure and provides graceful degradation.<br>
+                    <strong>Disadvantages:</strong> Must be written as a Class component. (Most modern developers use the popular <code>react-error-boundary</code> npm package to abstract this class away).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Will an Error Boundary catch an error thrown inside a `setTimeout` or a `fetch` Promise?</strong><br>
+                    <strong>A:</strong> No! Error Boundaries do NOT catch errors in asynchronous code (Promises, setTimeout), event handlers (onClick), or Server-side rendering. They only catch errors that happen during the synchronous React <em>rendering</em> phase. Async errors must be caught using standard <code>try/catch</code> blocks.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 5 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                5. Portals (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">ReactDOM.createPortal</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>React Portals provide a first-class way to render children into a DOM node that exists completely outside the DOM hierarchy of the parent component.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Normally, a component's render output is placed in the DOM physically inside its parent <code>&lt;div&gt;</code>.</li>
+                        <li>This causes massive CSS issues for Modals and Tooltips. If a parent has <code>overflow: hidden</code> or a strict <code>z-index</code>, the Modal gets trapped inside the parent and cut off.</li>
+                        <li><code>createPortal</code> solves this by physically teleporting the HTML of the child to a different part of the actual <code>index.html</code> document (usually directly under the <code>&lt;body&gt;</code>).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { createPortal } from 'react-dom';
+
+const Modal = ({ isOpen, children }) => {
+  if (!isOpen) return null;
+
+  // We are rendering 'children', but appending them directly to document.body
+  // (or a dedicated div like document.getElementById('modal-root'))
+  return createPortal(
+    &lt;div className="modal-overlay"&gt;
+      &lt;div className="modal-content"&gt;
+        {children}
+      &lt;/div&gt;
+    &lt;/div&gt;,
+    document.body // Target DOM node
+  );
+};
+
+// Usage deeply nested inside some component:
+// &lt;Modal isOpen={true}&gt; &lt;h1&gt;I float above everything!&lt;/h1&gt; &lt;/Modal&gt;</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Dialog boxes / Modals.</li>
+                        <li>Hover Tooltips and complex Dropdown menus.</li>
+                        <li>Global Toast notification snackbars.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Completely bypasses tricky CSS stacking contexts (z-index) and overflow restrictions of parent containers.<br>
+                    <strong>Disadvantages:</strong> Requires managing DOM nodes slightly outside of the standard React flow (e.g., ensuring the target div actually exists in the HTML file).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: If a Portal renders its HTML completely outside the parent DOM node, how does Event Bubbling work?</strong><br>
+                    <strong>A:</strong> This is the magic of Portals! Even though the physical HTML is appended to the <code>&lt;body&gt;</code>, the component still exists in the <em>React component tree</em> exactly where you placed it. Because React uses its own Synthetic Event system, an <code>onClick</code> inside the portal will still bubble up through the React ancestors, even though it wouldn't bubble up through the real DOM ancestors.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

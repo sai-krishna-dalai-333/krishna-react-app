@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 6: Routing & Navigation - React Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-lg">6</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Routing & Navigation</h1>
+                    <p class="text-xs text-slate-400">React Masterclass Module 6</p>
+                </div>
+            </div>
+            <a href="./syllabus.html"  class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors border border-white/20">
+                ← Back to Roadmap
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Intro Note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+            <p class="text-sm leading-relaxed">
+                <strong>📝 How to use this guide:</strong> React by default is a Single Page Application (SPA), meaning it doesn't have multiple pages. This module teaches you how to use <strong>React Router</strong> to fake the illusion of multiple pages. Pay close attention to Protected Routes and Dynamic Parameters, as these are foundational for any enterprise dashboard.
+            </p>
+        </div>
+
+        <!-- Topic 1 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                1. React Router DOM (v6/v7) Setup
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`react-router-dom` is the standard library for routing in React web applications. It keeps your UI synchronized with the browser's URL, enabling navigation without page reloads.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>In traditional websites, navigating to a new URL sends a request to the server, which returns a completely new HTML page.</li>
+                        <li>React Router intercepts URL changes, prevents the browser request, and simply swaps out the React components currently rendered on the screen.</li>
+                        <li>Modern setups (v6.4+) highly encourage using the "Data Router" (<code>createBrowserRouter</code>) over the older <code>&lt;BrowserRouter&gt;</code> component wrapper.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+
+// 1. Define the routing tree
+const router = createBrowserRouter([
+  { path: '/', element: &lt;Home /&gt; },
+  { path: '/about', element: &lt;About /&gt; },
+]);
+
+// 2. Provide the router to the application root
+const App = () => {
+  return &lt;RouterProvider router={router} /&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Any application that has more than one "view" (e.g., Home page, Login page, Dashboard, User Settings).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> The absolute industry standard. Enormous ecosystem and documentation. Enables deep-linking and browser history navigation (back/forward buttons).<br>
+                    <strong>Disadvantages:</strong> The API changes drastically between major versions (v5 to v6 was a massive rewrite), causing significant migration headaches for legacy apps.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is the difference between `BrowserRouter` and `HashRouter`?</strong><br>
+                    <strong>A:</strong> <code>BrowserRouter</code> uses the modern HTML5 History API to create clean URLs (e.g., <code>domain.com/about</code>). It requires server-side configuration to route all requests back to <code>index.html</code>. <code>HashRouter</code> uses the hash portion of the URL (e.g., <code>domain.com/#/about</code>). It doesn't require server configuration because everything after the <code>#</code> is ignored by the server, making it useful for simple static file hosts.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                2. Routes, Route, Link, NavLink
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>These are the core components of React Router. `Routes` groups paths, `Route` maps a path to a component, `Link` allows navigation, and `NavLink` is a special link that knows if it is "active".</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><code>&lt;Routes&gt;</code> looks through all its child routes to find the best match for the current URL.</li>
+                        <li><code>&lt;Route&gt;</code> pairs a specific <code>path</code> string to an <code>element</code> (JSX).</li>
+                        <li>You must NEVER use standard <code>&lt;a href=""&gt;</code> tags to navigate internally, as they force a full browser refresh. Use <code>&lt;Link to=""&gt;</code> instead.</li>
+                        <li><code>&lt;NavLink&gt;</code> is just a <code>&lt;Link&gt;</code> that provides an <code>isActive</code> boolean to its <code>className</code> or <code>style</code> props so you can highlight the current page in a navbar.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { Routes, Route, Link, NavLink } from 'react-router-dom';
+
+const Navbar = () => (
+  &lt;nav&gt;
+    &lt;Link to="/"&gt;Brand Logo&lt;/Link&gt;
+    
+    {/* NavLink automatically applies the 'active' class when on /dashboard */}
+    &lt;NavLink 
+      to="/dashboard"
+      className={({ isActive }) => isActive ? "text-blue-500 font-bold" : "text-gray-500"}
+    &gt;
+      Dashboard
+    &lt;/NavLink&gt;
+  &lt;/nav&gt;
+);</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Using <code>NavLink</code> to build top navigation bars or sidebars where the currently selected menu item needs to be highlighted.</li>
+                        <li>Using <code>Link</code> to build footer links or "Read More" buttons on blog cards.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Declarative approach to routing. Links are accessible out of the box.<br>
+                    <strong>Disadvantages:</strong> None. This is the fundamental way to navigate in a React SPA.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why is using `&lt;a href=""&gt;` bad inside a React application?</strong><br>
+                    <strong>A:</strong> An <code>&lt;a href&gt;</code> tag completely discards the current web page and asks the server for a new one. This triggers a full page reload, wiping out the entire React application state, Context, and Redux store. <code>&lt;Link&gt;</code> prevents this default behavior and uses the browser's History API to change the URL without reloading the page.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                3. Dynamic Routing (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useParams</code>) & Query Parameters
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Dynamic Routing allows you to capture values directly from the URL. `useParams` reads dynamic path segments (e.g., `/user/:id`), while `useSearchParams` reads the query string (e.g., `?sort=asc`).</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Path Parameters:</strong> Defined in the route config using a colon (e.g., <code>path="/profile/:username"</code>). Extracted using <code>const { username } = useParams()</code>. Used for identifying specific resources.</li>
+                        <li><strong>Search Parameters:</strong> The string after the <code>?</code> in a URL. Extracted using <code>const [searchParams, setSearchParams] = useSearchParams()</code>. It behaves exactly like <code>useState</code>, but stores the state inside the URL.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { useParams, useSearchParams } from 'react-router-dom';
+
+const ProductPage = () => {
+  // Extracting from URL path: e.g., /products/123
+  const { productId } = useParams(); 
+  
+  // Extracting from Query String: e.g., /products/123?color=red
+  const [searchParams, setSearchParams] = useSearchParams();
+  const color = searchParams.get('color') || 'blue';
+
+  const changeColor = (newColor) => {
+    // Updates URL to ?color=newColor without reloading
+    setSearchParams({ color: newColor }); 
+  };
+
+  return &lt;div&gt;Viewing Product #{productId} in {color}&lt;/div&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><code>useParams</code>: Detail pages. Clicking a user profile goes to <code>/users/dave123</code>. The component uses <code>useParams</code> to get "dave123" and fetches Dave's data from the API.</li>
+                        <li><code>useSearchParams</code>: Filters, sorting, and pagination on a grid. Storing these in the URL means the user can bookmark the page or share the link with the exact filters applied.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Makes UI state shareable and bookmarkable (URL-driven state).<br>
+                    <strong>Disadvantages:</strong> URL Search Params are strictly strings. You must manually parse booleans or numbers (e.g., <code>Number(searchParams.get('page'))</code>).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: When should you store state in `useState` versus `useSearchParams` (the URL)?</strong><br>
+                    <strong>A:</strong> You should store state in the URL if it dictates what the user is currently looking at and they might want to share or bookmark that exact view (e.g., search queries, active tab, page number). You should use <code>useState</code> for ephemeral UI state that doesn't matter if it's lost on refresh (e.g., a dropdown menu being open or closed, form inputs before submission).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 4 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                4. Programmatic Navigation (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useNavigate</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useNavigate` is a hook that allows you to trigger URL changes via JavaScript code, rather than waiting for the user to physically click a `<Link>` component.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>It returns a function (typically named <code>navigate</code>).</li>
+                        <li>You can pass a string path to navigate somewhere new: <code>navigate('/dashboard')</code>.</li>
+                        <li>You can pass a number to go forward or backward in the browser history stack: <code>navigate(-1)</code> acts like clicking the browser's "Back" button.</li>
+                        <li>You can pass options like <code>{ replace: true }</code> to overwrite the current history entry.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { useNavigate } from 'react-router-dom';
+
+const LoginForm = () => {
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const success = await loginUser(); // some API call
+    
+    if (success) {
+      // Redirect to dashboard on success, replacing the login page in history
+      navigate('/dashboard', { replace: true });
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleLogin}&gt;
+      {/* form fields... */}
+      &lt;button type="submit"&gt;Log In&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Redirecting a user after a successful login or form submission.</li>
+                        <li>Building a "Cancel" or "Go Back" button.</li>
+                        <li>Redirecting a user away from a page if they lack permissions, based on an API response.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Essential for handling business logic that dictates where the user should go based on data outcomes.<br>
+                    <strong>Disadvantages:</strong> Should not be used to replace simple <code>&lt;Link&gt;</code> tags. Putting an <code>onClick={navigate}</code> on a standard <code>&lt;div&gt;</code> instead of using an anchor breaks accessibility and SEO.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What exactly does `Maps('/home', { replace: true })` do?</strong><br>
+                    <strong>A:</strong> Normally, navigating pushes a new entry onto the browser's history stack. If the user clicks the browser's "Back" button, they go to the previous page. The <code>replace: true</code> option replaces the <em>current</em> entry in the history stack instead. This is crucial for login pages—after logging in, you replace the login route so that clicking "Back" doesn't take the user back to the login screen.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 5 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                5. Protected Routes (Authentication wrappers)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>A Protected Route is a structural pattern where a route is wrapped by a higher-order component that checks the user's authentication status before allowing them to view the page.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>React Router doesn't have built-in "auth" features. You have to build it yourself.</li>
+                        <li>You create a custom component (e.g., <code>&lt;ProtectedRoute&gt;</code>) that checks global state (Context/Redux) to see if the user is logged in.</li>
+                        <li>If logged in, it renders the child components.</li>
+                        <li>If NOT logged in, it immediately redirects the user to the <code>/login</code> route using the <code>&lt;Navigate /&gt;</code> component.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { Navigate } from 'react-router-dom';
+import { useAuth } from './hooks/useAuth';
+
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) return &lt;div&gt;Loading...&lt;/div&gt;; // Prevent premature redirect
+
+  if (!isAuthenticated) {
+    // Navigate immediately without user interaction
+    return &lt;Navigate to="/login" replace /&gt;;
+  }
+
+  return children;
+};
+
+// Usage in router setup:
+// &lt;Route path="/dashboard" element={
+//   &lt;ProtectedRoute&gt; &lt;Dashboard /&gt; &lt;/ProtectedRoute&gt;
+// } /&gt;</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Securing admin panels, user profile settings, and payment portals so unauthenticated users cannot access them by manually typing the URL.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Centralizes security logic. You don't have to write "check if user is logged in" at the top of every single protected component.<br>
+                    <strong>Disadvantages:</strong> Client-side route protection is fundamentally insecure. An attacker can still download the JS bundle. True security must always happen at the API layer (Backend).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: How do you redirect a user back to their intended page after they finish logging in?</strong><br>
+                    <strong>A:</strong> When the <code>ProtectedRoute</code> redirects the user to <code>/login</code>, it should pass the current location inside the <code>state</code> prop: <code>&lt;Navigate to="/login" state={{ from: location.pathname }} /&gt;</code>. Then, inside the Login component, after a successful login, you read that state and redirect them back: <code>navigate(state?.from || '/dashboard')</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 6 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                6. Layout Routes and Nested Routing (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">&lt;Outlet /&gt;</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Nested routing allows you to define child routes inside parent routes. The `<Outlet />` component is placed in the parent component and acts as a placeholder where the matched child component will be injected.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Often, multiple pages share the exact same layout (e.g., a Sidebar and a Top Navbar).</li>
+                        <li>Instead of importing the Sidebar into every single page, you create a "Layout Component".</li>
+                        <li>You make the pages "children" of this Layout Route in the router configuration.</li>
+                        <li>The Layout component renders the persistent UI (Sidebar) and an <code>&lt;Outlet /&gt;</code>. React Router injects the correct page into the Outlet based on the URL.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { Outlet } from 'react-router-dom';
+
+// 1. The Layout Component
+const DashboardLayout = () => {
+  return (
+    &lt;div className="flex"&gt;
+      &lt;Sidebar /&gt; {/* This persists across all child routes! */}
+      &lt;div className="main-content"&gt;
+        &lt;Outlet /&gt; {/* Child route components are injected here */}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+// 2. Router Config
+/*
+  &lt;Route path="/app" element={&lt;DashboardLayout /&gt;}&gt;
+    &lt;Route path="profile" element={&lt;UserProfile /&gt;} /&gt; 
+    &lt;Route path="settings" element={&lt;Settings /&gt;} /&gt;
+  &lt;/Route&gt;
+*/</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Dashboard architectures where a left sidebar stays on screen while the right-side content changes.</li>
+                        <li>Multi-step checkout flows where the header/footer and progress bar remain constant.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Drastically improves performance. When navigating between child routes, the Layout component (and its Sidebar/Navbar) does NOT re-render. Only the <code>&lt;Outlet /&gt;</code> content changes.<br>
+                    <strong>Disadvantages:</strong> Can make deeply nested router configurations slightly harder to read at a glance.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What happens if a parent route has child routes, but the parent component forgets to include an `<Outlet />`?</strong><br>
+                    <strong>A:</strong> The child routes will never be rendered on the screen, even if the URL correctly matches the child's path. React Router needs the <code>&lt;Outlet /&gt;</code> component to know exactly <em>where</em> in the parent's DOM tree it should inject the child UI.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

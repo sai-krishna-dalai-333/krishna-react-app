@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Basic Coding & Component Architecture - React Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-lg">3</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Basic Coding & Component Architecture</h1>
+                    <p class="text-xs text-slate-400">React Masterclass Module 3</p>
+                </div>
+            </div>
+            <!-- Ensure this points back to your main syllabus file -->
+            <a href="react_syllabus_explorer.html" class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors border border-white/20">
+                ← Back to Roadmap
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Intro Note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+            <p class="text-sm leading-relaxed">
+                <strong>📝 How to use this guide:</strong> This module covers the absolute daily essentials of writing React code. You will learn how to structure UI, manage data flow using Props and State, loop through lists safely, and handle user interactions. Master these 7 topics, and you can build almost any UI in React.
+            </p>
+        </div>
+
+        <!-- Topic 1 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                1. Functional Components vs. Class Components
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Functional components are simple JavaScript functions that return JSX. Class components are ES6 classes that extend `React.Component` and require a `render()` method.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Historically, Class components were required if you needed to use state or lifecycle methods.</li>
+                        <li>With the introduction of Hooks (React 16.8), Functional components gained the ability to use state (<code>useState</code>) and side effects (<code>useEffect</code>).</li>
+                        <li>Today, Functional components are the absolute standard. Class components are mostly considered legacy code, except for very specific use cases like Error Boundaries.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// The Old Way: Class Component
+class WelcomeClass extends React.Component {
+  render() {
+    return &lt;h1&gt;Hello, {this.props.name}&lt;/h1&gt;;
+  }
+}
+
+// The Modern Way: Functional Component
+const WelcomeFunction = ({ name }) => {
+  return &lt;h1&gt;Hello, {name}&lt;/h1&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Writing 99% of all new UI elements, pages, and layout wrappers in a modern React application.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Functional components are vastly easier to read, require much less boilerplate code, and completely eliminate confusion surrounding the <code>this</code> keyword.<br>
+                    <strong>Disadvantages:</strong> None in modern React. However, you must still use Class components if you need to implement <code>componentDidCatch</code> for an Error Boundary.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why did React introduce Hooks and shift away from Classes?</strong><br>
+                    <strong>A:</strong> Classes made it very difficult to reuse stateful logic between components. Developers had to use complex patterns like "Higher-Order Components" or "Render Props," which led to "wrapper hell" (deeply nested component trees). Hooks allow you to extract and share stateful logic as simple JavaScript functions without changing your component hierarchy.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                2. JSX Rules and Best Practices
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>JSX is a syntax extension that allows writing HTML-like markup inside JavaScript. It comes with strict rules: returning a single parent, closing all tags, and using camelCase for attributes.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Single Parent:</strong> A component must return a single root element (or a Fragment <code>&lt;&gt;&lt;/&gt;</code>).</li>
+                        <li><strong>Close Tags:</strong> Elements like <code>&lt;img&gt;</code> or <code>&lt;br&gt;</code> must be self-closed like <code>&lt;img /&gt;</code>.</li>
+                        <li><strong>camelCase:</strong> Because it is JS, HTML attributes become camelCase (e.g., <code>onclick</code> becomes <code>onClick</code>, <code>tabindex</code> becomes <code>tabIndex</code>).</li>
+                        <li><strong>Reserved Words:</strong> Use <code>className</code> instead of <code>class</code>, and <code>htmlFor</code> instead of <code>for</code>.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const UserProfile = () => {
+  const avatarUrl = "/profile.png";
+  
+  // Using Fragments <> </> to avoid adding extra DOM div nodes
+  return (
+    &lt;&gt;
+      &lt;h1 className="title"&gt;User Profile&lt;/h1&gt;
+      {/* Self-closing tag and dynamic JS injection with curly braces */}
+      &lt;img src={avatarUrl} alt="User" className="avatar" /&gt;
+      &lt;label htmlFor="email"&gt;Email&lt;/label&gt;
+    &lt;/&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Using curly braces <code>{}</code> to embed dynamic variables, math operations, or function calls directly inside the markup.</li>
+                        <li>Using Fragments to group a list of table cells (<code>&lt;td&gt;</code>) without breaking the HTML <code>&lt;table&gt;</code> structure with an unwanted <code>&lt;div&gt;</code>.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Keeps rendering logic and UI markup coupled in a highly readable format.<br>
+                    <strong>Disadvantages:</strong> Requires developers to learn slight syntax variations from standard HTML.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why must a React component return a single parent element?</strong><br>
+                    <strong>A:</strong> Under the hood, JSX compiles into the <code>React.createElement()</code> JavaScript function. A JavaScript function can only return <em>one</em> value (or one object). Returning multiple sibling elements without a parent wrapper would be like trying to return multiple distinct objects from a single function, which is invalid syntax.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                3. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">props</code> (Passing data & `children`)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Props (short for properties) are read-only inputs passed from a parent component down to a child component to configure its rendering or behavior.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Data in React flows <strong>unidirectionally</strong> (top-down).</li>
+                        <li>Props are <strong>immutable</strong> (read-only). A child component can NEVER modify its own props.</li>
+                        <li><strong>Prop Drilling:</strong> The process of passing props through multiple layers of intermediate components just to get the data to a deeply nested child.</li>
+                        <li><strong>The `children` prop:</strong> A special built-in prop that passes whatever is placed <em>between</em> the opening and closing tags of a component.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// The Child Component using Destructuring and the 'children' prop
+const Card = ({ title, children }) => {
+  return (
+    &lt;div className="card"&gt;
+      &lt;h2&gt;{title}&lt;/h2&gt;
+      &lt;div className="card-body"&gt;{children}&lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+// The Parent Component
+const App = () => {
+  return (
+    &lt;Card title="User Settings"&gt;
+      {/* Everything inside here is passed as the 'children' prop */}
+      &lt;p&gt;Change your password here.&lt;/p&gt;
+      &lt;button&gt;Save&lt;/button&gt;
+    &lt;/Card&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Creating highly reusable UI components (e.g., passing <code>color="red"</code> and <code>text="Delete"</code> to a generic Button component).</li>
+                        <li>Using the <code>children</code> prop to create layout wrappers, Modals, or formatting containers.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Makes components predictable, reusable, and easy to test.<br>
+                    <strong>Disadvantages:</strong> Prop drilling makes code difficult to maintain if you have to pass data through 5 layers of components. (This is solved by using <code>useContext</code> or Redux).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: If props are read-only, how does a child component update data in the parent?</strong><br>
+                    <strong>A:</strong> Through "Inverse Data Flow". The parent must define a state-updating function and pass that <em>function</em> down as a prop to the child. The child then invokes that function (usually via an event like onClick), passing the new data up as an argument.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 4 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                4. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">state</code> (Conceptual Overview)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>State is a component's internal, mutable memory. When a component's state updates, React automatically triggers a re-render of that component and its children to reflect the new data in the UI.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Unlike props (which are external and read-only), state is <strong>internal and controlled entirely by the component itself</strong>.</li>
+                        <li>State must NEVER be mutated directly (e.g., <code>count = 5</code>). It must be updated using the dedicated setter function provided by React.</li>
+                        <li>State updates in React are <strong>asynchronous</strong> and batched for performance.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { useState } from 'react';
+
+const Counter = () => {
+  // Array destructuring: [currentValue, setterFunction]
+  const [count, setCount] = useState(0);
+
+  const handleIncrement = () => {
+    // Correct way to update state
+    setCount(count + 1);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;You clicked {count} times&lt;/p&gt;
+      &lt;button onClick={handleIncrement}&gt;+1&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Tracking what the user is typing into a form input.</li>
+                        <li>Keeping track of whether a Modal or Dropdown is currently open or closed (<code>isOpen</code> boolean).</li>
+                        <li>Storing the JSON data returned from an API fetch.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Drives dynamic, interactive user interfaces effortlessly.<br>
+                    <strong>Disadvantages:</strong> Local state gets trapped in the component. If a sibling component needs access to that data, the state must be "lifted up" to their closest common parent, which can lead to prop drilling.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is the primary difference between Props and State?</strong><br>
+                    <strong>A:</strong> Think of it like a function. <strong>Props</strong> are the arguments passed <em>into</em> the function from the outside (they are fixed during that render). <strong>State</strong> is like the local variables declared <em>inside</em> the function that change over time and cause the function to run again (re-render) when modified.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 5 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                5. Conditional Rendering
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Conditional rendering is the ability to output different UI components or elements based on certain JavaScript boolean conditions or state values.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Early Returns (if/else):</strong> Good for rendering entirely different screens (like a full page loading spinner).</li>
+                        <li><strong>Ternary Operator (`? :`):</strong> Best for "if-else" scenarios inside JSX block (e.g., Logged In vs Logged Out).</li>
+                        <li><strong>Logical AND (`&&`):</strong> Best for "if-only" scenarios where you want to render something ONLY if a condition is true, and nothing otherwise.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const Dashboard = ({ isLoading, user, hasError }) => {
+  // 1. Early Return
+  if (hasError) return &lt;h1&gt;Something went wrong!&lt;/h1&gt;;
+  if (isLoading) return &lt;Spinner /&gt;;
+
+  return (
+    &lt;div&gt;
+      {/* 2. Ternary Operator */}
+      {user.isLoggedIn ? &lt;Welcome name={user.name} /&gt; : &lt;LoginButton /&gt;}
+
+      {/* 3. Logical AND (&&) */}
+      {user.isAdmin && &lt;AdminPanel /&gt;}
+    &lt;/div&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Showing empty states (e.g., "You have no items in your cart").</li>
+                        <li>Protecting routes or hiding premium features from free-tier users.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Clean, declarative way to control the UI.<br>
+                    <strong>Disadvantages:</strong> Heavily nested ternaries (<code>condition ? (cond2 ? a : b) : c</code>) make JSX unreadable. In such cases, abstract the logic into a separate helper function or component.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What happens if you do `{array.length && &lt;List /&gt;}` when the array is empty?</strong><br>
+                    <strong>A:</strong> This is a classic bug. An empty array has a length of <code>0</code>. In JavaScript, <code>0</code> is falsy, so the <code>&&</code> short-circuits. However, React renders numbers. So, it will physically print the number "0" onto the screen instead of rendering nothing. <strong>Fix:</strong> Always use a strict boolean comparison: <code>{array.length > 0 && &lt;List /&gt;}</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 6 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                6. Looping in React (Lists & Keys)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Looping in React is achieved by mapping over an array of data using the JavaScript `.map()` method to return an array of JSX elements. Every dynamically generated element must have a unique `key` prop.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>React uses the <code>key</code> prop to uniquely identify elements in a list.</li>
+                        <li>Keys are essential for the Reconciliation (Diffing) algorithm. They help React quickly figure out exactly which items were added, changed, or removed.</li>
+                        <li>Keys must be unique among siblings and should be stable (like a database ID), not randomly generated during render.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const TodoList = ({ todos }) => {
+  return (
+    &lt;ul&gt;
+      {todos.map((todo) => (
+        // The key is placed on the outermost element returned by the map
+        &lt;li key={todo.id} className="todo-item"&gt;
+          &lt;span&gt;{todo.text}&lt;/span&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Rendering e-commerce product grids, social media feeds, data tables, or navigation menus from an array of JSON data.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> <code>.map()</code> is declarative and returns a new array, keeping rendering logic clean.<br>
+                    <strong>Disadvantages:</strong> Missing or incorrect keys cause severe performance degradation and bizarre UI state bugs.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why is using the array index as a `key` considered an anti-pattern?</strong><br>
+                    <strong>A:</strong> If the list is static (never changes), index is fine. But if the list can be reordered, filtered, or items can be added/deleted, the index of an item changes. React uses the key to match state to the component. If the key changes, React might attach the internal state (like text in an input box) to the wrong list item, causing massive data bugs.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 7 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                7. Event Handling in React (Synthetic Events)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>React handles DOM events using a cross-browser wrapper called a `SyntheticEvent`. Events are passed as camelCased props (e.g., `onClick`) and take a function reference rather than a string.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>In Vanilla HTML, you write <code>onclick="doSomething()"</code>. In React, you write <code>onClick={doSomething}</code>.</li>
+                        <li>You must pass the <strong>reference</strong> to the function, not invoke it immediately.</li>
+                        <li>To prevent default browser behavior (like a form refreshing the page), you must explicitly call <code>e.preventDefault()</code> inside your handler.</li>
+                        <li>Under the hood, React attaches one massive event listener to the root of the document (Event Delegation) for performance, rather than attaching listeners to every single node.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const LoginForm = () => {
+  const [email, setEmail] = useState('');
+
+  // The 'e' object is a React SyntheticEvent
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevents page reload
+    console.log("Submitting:", email);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input 
+        type="email" 
+        value={email}
+        onChange={(e) => setEmail(e.target.value)} // Inline event handler
+      /&gt;
+      &lt;button type="submit"&gt;Login&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Capturing form submissions, tracking button clicks, handling drag-and-drop, or tracking keyboard inputs (<code>onKeyDown</code>).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Normalizes event behaviors across all browsers. Event delegation makes memory usage extremely efficient.<br>
+                    <strong>Disadvantages:</strong> In very rare edge cases integrating with vanilla JS libraries outside React, you might need to use native DOM events instead of Synthetic Events.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why do we write `onClick={handleClick}` instead of `onClick={handleClick()}`?</strong><br>
+                    <strong>A:</strong> <code>handleClick()</code> with parentheses executes the function <em>immediately</em> during the render phase. If that function updates state, it triggers another render, which executes the function again, causing an infinite loop. We pass <code>handleClick</code> (without parentheses) so React only executes it later when the user actually clicks.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

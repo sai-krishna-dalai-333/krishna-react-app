@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4: The Hooks Ecosystem - React Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-lg">4</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">The Hooks Ecosystem (In-Depth)</h1>
+                    <p class="text-xs text-slate-400">React Masterclass Module 4</p>
+                </div>
+            </div>
+            <a href="./syllabus.html"  class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors border border-white/20">
+                ← Back to Roadmap
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Intro Note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+            <p class="text-sm leading-relaxed">
+                <strong>📝 How to use this guide:</strong> This module is the beating heart of modern React. Hooks allow functional components to "hook into" React state and lifecycle features. Interviewers <em>will</em> grill you on these. Pay special attention to the Interview Corners regarding dependency arrays and referential equality!
+            </p>
+        </div>
+
+        <!-- Topic 1 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                1. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useState</code>
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useState` is a hook that allows you to add state variables to functional components. It returns an array with the current state value and a function to update it.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>It takes an initial state value as its only argument.</li>
+                        <li>Updating state triggers a re-render of the component.</li>
+                        <li>State updates in React are asynchronous. Calling the setter function does not immediately mutate the variable on the next line of code; it schedules an update for the next render.</li>
+                        <li>If the new state depends on the previous state, you should pass a callback function to the setter.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const Counter = () => {
+  const [count, setCount] = useState(0);
+
+  const handleIncrement = () => {
+    // Functional update ensures we have the absolute latest state
+    setCount(prevCount => prevCount + 1);
+  };
+
+  return &lt;button onClick={handleIncrement}&gt;{count}&lt;/button&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Tracking form input values (controlled components).</li>
+                        <li>Toggling UI elements (e.g., Modals, Dropdowns).</li>
+                        <li>Storing fetched API data locally before displaying it.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Simple and intuitive API for managing local state.<br>
+                    <strong>Disadvantages:</strong> Not ideal for highly complex state objects with deeply nested logic (use <code>useReducer</code> instead).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What happens if you call `setCount(count + 1)` three times in a row inside a single synchronous function?</strong><br>
+                    <strong>A:</strong> The count will only increase by 1. Because state updates are asynchronous and batched, all three calls look at the closure's original value of <code>count</code> (e.g., 0). They all schedule an update to set the state to <code>0 + 1</code>. To fix this, use the functional update: <code>setCount(prev => prev + 1)</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                2. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useEffect</code>
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useEffect` lets you synchronize a component with an external system. It allows you to perform side effects (data fetching, subscriptions, manually changing the DOM) inside functional components.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>It runs <em>after</em> the component has rendered to the screen.</li>
+                        <li>It takes two arguments: a setup function and an optional dependency array.</li>
+                        <li><strong>No array:</strong> Runs after <em>every</em> render.</li>
+                        <li><strong>Empty array `[]`:</strong> Runs only <em>once</em> when the component mounts.</li>
+                        <li><strong>Array with values `[id]`:</strong> Runs when the component mounts, and re-runs if `id` changes between renders.</li>
+                        <li>The setup function can return a <strong>cleanup function</strong>, which runs before the component unmounts or before the effect re-runs.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const Timer = ({ isActive }) => {
+  useEffect(() => {
+    if (!isActive) return;
+    
+    // Setup
+    const intervalId = setInterval(() => console.log('Tick'), 1000);
+    
+    // Cleanup function
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [isActive]); // Re-run effect if isActive changes
+  
+  return &lt;div&gt;Timer is running...&lt;/div&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Fetching data from a REST API on page load.</li>
+                        <li>Setting up WebSocket connections or event listeners (like <code>window.addEventListener('scroll')</code>).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Combines <code>componentDidMount</code>, <code>componentDidUpdate</code>, and <code>componentWillUnmount</code> into a single API.<br>
+                    <strong>Disadvantages:</strong> Missing dependencies in the array is the #1 cause of "stale closure" bugs. Adding too many dependencies can cause infinite rendering loops.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: How do you cause an infinite loop with `useEffect`?</strong><br>
+                    <strong>A:</strong> By omitting the dependency array (or putting a state variable in it) and then updating that exact same state variable inside the effect. <br><code>useEffect(() => { setCount(count + 1); }, [count])</code>. <br>Render -> Effect runs -> State updates -> Re-render -> Effect runs -> Infinite loop.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                3. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useRef</code>
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useRef` is a hook that lets you reference a value that’s not needed for rendering. Mutating a ref does NOT trigger a re-render.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>It returns an object with a single property: <code>{ current: initialValue }</code>.</li>
+                        <li>Unlike state, the value of <code>ref.current</code> persists across re-renders without causing a re-render itself.</li>
+                        <li>It is primarily used as an "escape hatch" to directly access real DOM elements (bypassing the Virtual DOM).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const FocusInput = () => {
+  const inputRef = useRef(null);
+  const rendersCount = useRef(0);
+
+  const handleFocus = () => {
+    // 1. Directly accessing the DOM node
+    inputRef.current.focus();
+    
+    // 2. Mutating a value without causing a re-render
+    rendersCount.current += 1; 
+  };
+
+  return (
+    &lt;&gt;
+      &lt;input ref={inputRef} type="text" /&gt;
+      &lt;button onClick={handleFocus}&gt;Focus Input&lt;/button&gt;
+    &lt;/&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Managing focus, text selection, or media playback (<code>videoRef.current.play()</code>).</li>
+                        <li>Storing mutable interval IDs (from <code>setInterval</code>) so they can be cleared later without triggering re-renders.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Safely stores data outside the render cycle. Provides a bridge to Vanilla JS DOM manipulation.<br>
+                    <strong>Disadvantages:</strong> Overusing it to manipulate the DOM manually defeats the purpose of React's declarative state-driven philosophy.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why shouldn't you read or write `ref.current` during rendering?</strong><br>
+                    <strong>A:</strong> React expects components to behave like pure functions. Reading or writing a mutable value (like a ref) during the render phase makes component behavior unpredictable and breaks concurrent rendering features. Refs should only be accessed in event handlers or inside <code>useEffect</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 4 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                4. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useContext</code>
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useContext` lets you read and subscribe to context from your component. Context provides a way to pass data through the component tree without having to pass props down manually at every level (prop drilling).</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>You create a context using <code>React.createContext()</code>.</li>
+                        <li>You wrap a parent component in a <code>&lt;Context.Provider value={data}&gt;</code>.</li>
+                        <li>Any nested child, no matter how deep, can call <code>useContext(Context)</code> to access <code>data</code>.</li>
+                        <li>When the Provider's value changes, <em>all</em> components consuming that context will re-render.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { createContext, useContext } from 'react';
+
+// 1. Create Context
+const ThemeContext = createContext('light');
+
+const App = () => {
+  // 2. Provide Context
+  return (
+    &lt;ThemeContext.Provider value="dark"&gt;
+      &lt;Layout /&gt; {/* Deeply nested tree */}
+    &lt;/ThemeContext.Provider&gt;
+  );
+};
+
+const DeeplyNestedButton = () => {
+  // 3. Consume Context
+  const theme = useContext(ThemeContext);
+  return &lt;button className={`btn-${theme}`}&gt;Click Me&lt;/button&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Global Theme settings (Light/Dark mode).</li>
+                        <li>Current authenticated user data (User Auth state).</li>
+                        <li>Localization/Translation language settings.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Completely solves the "prop drilling" problem for global data.<br>
+                    <strong>Disadvantages:</strong> Poor performance if used for high-frequency state updates. Every time the context value changes, <em>every</em> component using <code>useContext</code> re-renders, bypassing <code>React.memo</code>.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why wouldn't you use Context to manage the state of a fast-typing text input globally?</strong><br>
+                    <strong>A:</strong> Because Context lacks fine-grained reactivity. If you put rapid state (like keystrokes) in Context, every single component subscribed to that Context will re-render on every single keystroke, causing massive lag. Redux or Zustand are better suited for fast, granular global state updates.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 5 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                5. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useReducer</code>
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useReducer` is an alternative to `useState` for managing complex state logic that involves multiple sub-values or when the next state depends heavily on the previous one. It uses a "reducer" function (like Redux).</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>You provide a reducer function <code>(state, action) => newState</code> and an initial state.</li>
+                        <li>It returns the current state and a <code>dispatch</code> function.</li>
+                        <li>Instead of updating state directly (like <code>setState(data)</code>), you dispatch "actions" describing what happened (e.g., <code>dispatch({ type: 'INCREMENT' })</code>).</li>
+                        <li>The reducer function contains a switch statement that calculates the new state based on the action type.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const reducer = (state, action) => {
+  switch (action.type) {
+    case 'increment': return { count: state.count + 1 };
+    case 'decrement': return { count: state.count - 1 };
+    default: throw new Error();
+  }
+};
+
+const Counter = () => {
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+  return (
+    &lt;&gt;
+      Count: {state.count}
+      &lt;button onClick={() => dispatch({ type: 'increment' })}&gt;+&lt;/button&gt;
+    &lt;/&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Managing forms with many interconnected fields (where changing one field impacts another).</li>
+                        <li>Handling data fetching states (loading, success, error) in a clean, predictable way instead of managing 3 separate <code>useState</code> hooks.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Predictable state transitions. Centralizes complex state logic. Easier to test the reducer function because it is a pure JavaScript function independent of React.<br>
+                    <strong>Disadvantages:</strong> Requires more boilerplate code than <code>useState</code>.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: When would you choose `useReducer` over `useState`?</strong><br>
+                    <strong>A:</strong> I would choose <code>useReducer</code> when state is an object with multiple nested properties, when multiple state variables need to be updated together in tandem, or when the next state relies heavily on complex logic regarding the previous state. It decouples the "what happened" (dispatch) from "how the state updates" (reducer).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 6 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                6. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useMemo</code>
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useMemo` is a hook that lets you cache (memoize) the result of a calculation between re-renders. It prevents expensive operations from running on every single render.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>It takes a calculation function and a dependency array.</li>
+                        <li>React will only recalculate the value if one of the dependencies has changed since the last render.</li>
+                        <li>If dependencies haven't changed, React skips the calculation and returns the cached value.</li>
+                        <li>It is strictly a performance optimization tool.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const DataGrid = ({ rawData, theme }) => {
+  // Sorting/filtering a massive array is expensive.
+  // We only recalculate this if 'rawData' changes.
+  // Changing 'theme' triggers a re-render, but bypasses this calculation.
+  const processedData = useMemo(() => {
+    return rawData.filter(item => item.isActive).sort();
+  }, [rawData]);
+
+  return &lt;div className={theme}&gt;...&lt;/div&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Filtering or sorting large datasets or arrays.</li>
+                        <li>Preserving the referential equality of an object or array passed down to an optimized child component.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Saves CPU cycles by preventing unnecessary expensive calculations.<br>
+                    <strong>Disadvantages:</strong> Overusing it actually <em>hurts</em> performance. Caching values takes memory and checking dependencies takes time. Do not use it for simple math or basic string concatenations.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is "Referential Equality" and how does `useMemo` help with it?</strong><br>
+                    <strong>A:</strong> In JS, two identical objects are not equal (<code>{} === {}</code> is false) because they occupy different memory spaces. Every time a component renders, inline objects/arrays are recreated at new memory addresses. If you pass an array as a prop to a child, the child thinks the prop changed and re-renders. <code>useMemo</code> caches the object, maintaining its exact memory reference across renders, preventing the child from re-rendering.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 7 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                7. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useCallback</code>
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useCallback` is a hook that caches a function definition between re-renders. While `useMemo` caches the <em>result</em> of a function, `useCallback` caches the function <em>itself</em>.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Every time a functional component renders, any functions declared inside it are recreated in memory.</li>
+                        <li>Usually, this is fast and fine. However, if you pass that function as a prop to a deeply nested, optimized child component (wrapped in <code>React.memo</code>), the child will re-render because it sees a "new" function reference.</li>
+                        <li><code>useCallback</code> locks the function's memory reference as long as its dependencies don't change.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const Parent = () => {
+  const [text, setText] = useState('');
+
+  // Caching the function so its reference doesn't change on every keystroke
+  const handleSubmit = useCallback(() => {
+    api.submitData(text);
+  }, [text]); // Re-create function only when 'text' changes
+
+  return (
+    &lt;&gt;
+      &lt;input value={text} onChange={e => setText(e.target.value)} /&gt;
+      {/* OptimizedChild won't re-render uselessly because handleSubmit reference is stable */}
+      &lt;OptimizedChild onSubmit={handleSubmit} /&gt; 
+    &lt;/&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Passing event handlers (like <code>onClick</code> or <code>onSubmit</code>) to highly optimized custom UI components (like a complex chart or grid).</li>
+                        <li>When a function is used as a dependency inside a <code>useEffect</code> block elsewhere.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Prevents unnecessary re-renders of child components.<br>
+                    <strong>Disadvantages:</strong> Just like <code>useMemo</code>, it adds memory overhead. Wrapping every single function in <code>useCallback</code> makes code ugly and slower. Only use it when passing functions to memoized child components.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is the exact relationship between `useMemo` and `useCallback`?</strong><br>
+                    <strong>A:</strong> They are essentially the same under the hood. <code>useCallback(fn, deps)</code> is functionally equivalent to writing <code>useMemo(() => fn, deps)</code>. `useCallback` is just syntactic sugar specifically meant for caching functions so you don't have to write a function that returns another function.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 8 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                8. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useLayoutEffect</code>
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useLayoutEffect` is identical to `useEffect` in signature, but it fires <em>synchronously</em> immediately after React performs all DOM mutations, but <em>before</em> the browser has a chance to paint those changes to the screen.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><code>useEffect</code> is asynchronous. React renders -> Browser paints -> <code>useEffect</code> runs.</li>
+                        <li><code>useLayoutEffect</code> is synchronous. React renders -> <code>useLayoutEffect</code> runs (blocking the browser) -> Browser paints.</li>
+                        <li>Because it blocks the browser from painting, it should only be used when absolutely necessary to prevent visual flickering.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const Tooltip = ({ children }) => {
+  const ref = useRef(null);
+  const [tooltipHeight, setTooltipHeight] = useState(0);
+
+  // Measure the DOM element BEFORE the user sees it, 
+  // so we can adjust its position without a visible flicker/jump.
+  useLayoutEffect(() => {
+    setTooltipHeight(ref.current.getBoundingClientRect().height);
+  }, []);
+
+  return &lt;div ref={ref} style={{ top: -tooltipHeight }}&gt;{children}&lt;/div&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Measuring DOM elements (getting scroll height, element widths) to dynamically calculate layouts.</li>
+                        <li>Preventing visual flickers (e.g., rendering an element, measuring it, and moving it to the right place before the user even sees it render in the wrong place).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Perfect for solving UI flickering issues related to layout dimensions.<br>
+                    <strong>Disadvantages:</strong> It blocks visual updates. If you do heavy calculations inside it, your app will feel frozen and unresponsive. Default to <code>useEffect</code> 99% of the time.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why does React give a warning if you use `useLayoutEffect` in a Server-Side Rendered (SSR) app like Next.js?</strong><br>
+                    <strong>A:</strong> Because <code>useLayoutEffect</code> relies on reading the DOM (which only exists in the browser). On the server, there is no DOM. Therefore, the effect can't run on the server, causing a mismatch between what the server generates and what the client expects.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 9 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                9. Custom Hooks
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>A Custom Hook is simply a JavaScript function whose name starts with "use" and that calls other React Hooks inside of it. It is the primary mechanism for extracting and reusing stateful logic across components.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Custom hooks do NOT share state. They share <em>stateful logic</em>. Each component calling a custom hook gets its own completely independent state variables.</li>
+                        <li>They must follow the Rules of Hooks (only call at the top level, only call from React functions).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// 1. Defining the Custom Hook
+function useWindowSize() {
+  const [size, setSize] = useState({ width: window.innerWidth });
+
+  useEffect(() => {
+    const handleResize = () => setSize({ width: window.innerWidth });
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return size; // Return the state
+}
+
+// 2. Using it in components
+const Navbar = () => {
+  const { width } = useWindowSize(); // Clean, reusable logic!
+  return &lt;div&gt;{width &lt; 768 ? 'Mobile Nav' : 'Desktop Nav'}&lt;/div&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><code>useFetch</code>: Reusable API fetching logic with loading/error states.</li>
+                        <li><code>useDebounce</code>: Delaying rapid API calls during search input typing.</li>
+                        <li><code>useLocalStorage</code>: Syncing React state with the browser's local storage automatically.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Drastically reduces code duplication. Keeps component files incredibly clean (separation of logic from UI).<br>
+                    <strong>Disadvantages:</strong> Poorly named or overly complex custom hooks can obscure what the code is actually doing.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What are the two absolute "Rules of Hooks"?</strong><br>
+                    <strong>A:</strong> 1. Only call Hooks at the top level. Never call them inside loops, conditions, or nested functions. This ensures hooks are called in the exact same order every render (how React maps state internally). <br> 2. Only call Hooks from React function components or other custom Hooks (not regular JS functions).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 10 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                10. React 18+ Hooks (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useTransition</code>, <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useId</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>React 18 introduced new hooks leveraging the Concurrent rendering engine. `useTransition` allows marking updates as non-urgent, and `useId` generates unique IDs for accessibility.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>`useTransition`:</strong> Returns <code>[isPending, startTransition]</code>. State updates wrapped in <code>startTransition</code> are marked as low-priority. If a high-priority update (like typing) occurs, React will pause the low-priority render.</li>
+                        <li><strong>`useId`:</strong> Generates a unique, stable string ID that works flawlessly across Server-Side Rendering (SSR) and Client-Side rendering.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { useTransition, useId } from 'react';
+
+const Search = () => {
+  const [query, setQuery] = useState('');
+  const [isPending, startTransition] = useTransition();
+  const id = useId(); // Generates e.g., ":r3:"
+
+  const handleChange = (e) => {
+    // High Priority: Update the input instantly
+    setQuery(e.target.value); 
+    
+    // Low Priority: Filtering the massive list can wait if user keeps typing
+    startTransition(() => {
+      filterMassiveList(e.target.value);
+    });
+  };
+
+  return (
+    &lt;&gt;
+      &lt;label htmlFor={id}&gt;Search:&lt;/label&gt;
+      &lt;input id={id} onChange={handleChange} /&gt;
+      {isPending ? &lt;Spinner/&gt; : &lt;List /&gt;}
+    &lt;/&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><code>useTransition</code>: Building highly responsive search bars that filter thousands of items locally without freezing the keyboard input.</li>
+                        <li><code>useId</code>: Connecting <code>&lt;label htmlFor&gt;</code> to <code>&lt;input id&gt;</code> in reusable UI components without hardcoding IDs or generating random numbers that break SSR.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Massive UX improvements by keeping the main thread free for urgent interactions.<br>
+                    <strong>Disadvantages:</strong> Adds complexity to state flow. Overusing concurrent features when not needed can make debugging UI states difficult.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is the difference between `useTransition` and `useDeferredValue`?</strong><br>
+                    <strong>A:</strong> They solve the same problem (concurrent rendering) but are used differently. You use <code>useTransition</code> when you have access to the state-updating function (the setter). You use <code>useDeferredValue</code> when you <em>only</em> receive a value from a parent via props and want to defer rendering based on that value, without controlling the state itself.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 10: Performance Optimization - React Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-lg">10</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Performance Optimization</h1>
+                    <p class="text-xs text-slate-400">React Masterclass Module 10</p>
+                </div>
+            </div>
+            <a href="./syllabus.html" class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors border border-white/20">
+                ← Back to Roadmap
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Intro Note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+            <p class="text-sm leading-relaxed">
+                <strong>📝 How to use this guide:</strong> Performance optimization is a favorite topic in senior frontend interviews. Interviewers want to know that you understand how React renders under the hood, and more importantly, how to <em>stop</em> it from rendering when it shouldn't. Pay very close attention to the nuances of <code>React.memo</code> and architectural composition techniques.
+            </p>
+        </div>
+
+        <!-- Topic 1 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                1. Code Splitting & Lazy Loading (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">React.lazy</code>, <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">Suspense</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Code splitting is the practice of breaking a large JavaScript bundle into smaller chunks. Lazy Loading uses `React.lazy()` to delay downloading a component's code until the user actually navigates to it or needs it.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>By default, Webpack or Vite bundles your entire React application into one massive Javascript file. This causes slow initial page loads.</li>
+                        <li><code>React.lazy()</code> lets you dynamically import a component via a Promise.</li>
+                        <li>Because the code takes time to download over the network, you must wrap the lazy-loaded component inside a <code>&lt;Suspense fallback={...}&gt;</code> component.</li>
+                        <li>React will display the <code>fallback</code> UI (like a loading spinner) while the Javascript chunk is being downloaded and parsed.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import React, { Suspense, lazy } from 'react';
+import { Routes, Route } from 'react-router-dom';
+
+// The regular way (forces download immediately on app load)
+import Home from './pages/Home';
+
+// The Lazy way (downloads ONLY when the user visits /dashboard)
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+
+const App = () => {
+  return (
+    &lt;Routes&gt;
+      &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+      &lt;Route path="/dashboard" element={
+        // Suspense is REQUIRED to handle the loading state
+        &lt;Suspense fallback={&lt;div&gt;Loading Dashboard...&lt;/div&gt;}&gt;
+          &lt;Dashboard /&gt;
+        &lt;/Suspense&gt;
+      } /&gt;
+    &lt;/Routes&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Route-based splitting:</strong> (Most common) Lazy loading entire pages so a user visiting the "Home" page doesn't have to download the code for the "Admin Settings" page.</li>
+                        <li><strong>Component-based splitting:</strong> Lazy loading massive libraries or components (like a heavy 3D Charting library or a PDF viewer) only when a user clicks a button to open them.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Drastically reduces the initial bundle size (Time to Interactive). Saves bandwidth.<br>
+                    <strong>Disadvantages:</strong> Introduces slight loading delays when navigating to a new route for the first time, as the browser must now fetch the new chunk.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: How does `React.lazy` work with Server-Side Rendering (SSR)?</strong><br>
+                    <strong>A:</strong> Historically, <code>React.lazy</code> did NOT support SSR; you had to use third-party libraries like <code>@loadable/components</code>. However, starting with React 18, <code>Suspense</code> and <code>React.lazy</code> fully support SSR architecture, allowing the server to stream HTML down to the client piece by piece as the lazy components resolve.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                2. Memoization Deep-Dive (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">React.memo</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`React.memo` is a Higher-Order Component (HOC) used to optimize performance by caching a functional component's rendered output. It prevents the component from re-rendering if its `props` have not changed.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>By default, when a parent component re-renders, ALL of its children re-render, regardless of whether their props changed.</li>
+                        <li>Wrapping a child in <code>React.memo()</code> forces React to do a shallow comparison (<code>===</code>) of the previous props vs. the next props.</li>
+                        <li>If the props are strictly equal, React skips rendering the child and reuses the last rendered Virtual DOM.</li>
+                        <li>You can optionally pass a custom comparison function as the second argument if shallow equality isn't enough.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import React, { useState } from 'react';
+
+// Wrap the component in React.memo
+const ExpensiveChart = React.memo(({ data }) => {
+  console.log("Chart is rendering!"); // Only prints if 'data' changes
+  return &lt;div&gt;Imagine a heavy chart here processing {data.length} items&lt;/div&gt;;
+});
+
+const Dashboard = () => {
+  const [count, setCount] = useState(0);
+  const [chartData] = useState([1, 2, 3]); // Stable reference
+
+  return (
+    &lt;div&gt;
+      {/* Clicking this button re-renders Dashboard, but ExpensiveChart is SKIPPED */}
+      &lt;button onClick={() => setCount(count + 1)}&gt;Clicks: {count}&lt;/button&gt;
+      
+      &lt;ExpensiveChart data={chartData} /&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Components that render a huge amount of DOM nodes (like a 1000-row data table).</li>
+                        <li>Components that perform heavy mathematical calculations on render.</li>
+                        <li>Pure UI components that almost never change but sit deep in a tree that updates frequently.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Can massively boost framerates and UI responsiveness by cutting dead rendering cycles.<br>
+                    <strong>Disadvantages:</strong> Checking props for equality takes CPU time. If a component's props change 100% of the time anyway, wrapping it in <code>memo</code> actually makes your app <em>slower</em> because React has to do the equality check <em>and</em> the render.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: I wrapped my component in `React.memo`, but it is still re-rendering every time the parent renders. Why?</strong><br>
+                    <strong>A:</strong> You are likely passing an inline object <code>style={{ color: 'red' }}</code> or an inline function <code>onClick={() => doSomething()}</code> as a prop. <code>React.memo</code> does a <em>shallow</em> comparison. In JavaScript, two identical but newly declared objects/functions are not equal in memory. So, on every parent render, the inline prop gets a new memory address, causing <code>memo</code> to think the props changed. You must use <code>useMemo</code> or <code>useCallback</code> in the parent to stabilize those references.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                3. Understanding Unnecessary Re-renders (And Fixing Them)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>An unnecessary re-render occurs when a component executes its render function again, but the resulting Virtual DOM is identical to the previous one, meaning no real DOM updates were required.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Re-renders in React are not inherently bad; they are how React works. It's only a problem if it causes noticeable lag.</li>
+                        <li>The #1 cause of unnecessary renders is keeping state too high up in the component tree.</li>
+                        <li><strong>Solution 1 (Push State Down):</strong> Move the fast-updating state (like a typing input) into its own isolated child component so it doesn't trigger the parent to render.</li>
+                        <li><strong>Solution 2 (Lift Content Up):</strong> Pass expensive components as <code>children</code> props. React knows that <code>children</code> don't change just because the wrapper component's state changes.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// BAD PATTERN: Typing in the input forces the HeavyList to re-render every keystroke
+const AppBad = () => {
+  const [text, setText] = useState('');
+  return (
+    &lt;div&gt;
+      &lt;input value={text} onChange={e => setText(e.target.value)} /&gt;
+      &lt;HeavyList /&gt; 
+    &lt;/div&gt;
+  );
+};
+
+// GOOD PATTERN (Push State Down): App no longer re-renders!
+const IsolatedInput = () => {
+  const [text, setText] = useState('');
+  return &lt;input value={text} onChange={e => setText(e.target.value)} /&gt;;
+};
+
+const AppGood = () => {
+  return (
+    &lt;div&gt;
+      &lt;IsolatedInput /&gt; {/* Only this small piece re-renders on typing */}
+      &lt;HeavyList /&gt;     {/* Never re-renders needlessly */}
+    &lt;/div&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Optimizing complex forms where typing in one text box shouldn't force 15 other dropdowns to re-render.</li>
+                        <li>Architecting Layout components (Modals/Drawers) to accept the main content via the <code>children</code> prop to isolate animation states from content states.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> "Component Composition" is the purest, most idiomatic way to optimize React—often eliminating the need for <code>useMemo</code> or <code>React.memo</code> entirely.<br>
+                    <strong>Disadvantages:</strong> Pre-maturely separating components just for the sake of optimization can lead to fragmented, hard-to-read codebases.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: How do you identify which component is causing performance issues in a React app?</strong><br>
+                    <strong>A:</strong> You use the <strong>React DevTools Profiler</strong>. You record a session while interacting with the app, and the Profiler gives you a flame graph. It highlights which components took the longest to render and, crucially, tells you <em>why</em> they rendered (e.g., "Hook 1 changed" or "Parent rendered").</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

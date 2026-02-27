@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 7: Advanced Data Fetching & Axios - React Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-lg">7</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Advanced Data Fetching & Axios</h1>
+                    <p class="text-xs text-slate-400">React Masterclass Module 7</p>
+                </div>
+            </div>
+            <a href="./syllabus.html"  class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors border border-white/20">
+                ← Back to Roadmap
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Intro Note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+            <p class="text-sm leading-relaxed">
+                <strong>📝 How to use this guide:</strong> Fetching data is the backbone of any dynamic React app. In this module, we transition from the basic built-in `fetch` API to using **Axios**, the industry standard for enterprise applications. Pay massive attention to **Interceptors and JWT Tokens**, as these are guaranteed interview topics for mid-to-senior frontend roles.
+            </p>
+        </div>
+
+        <!-- Topic 1 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                1. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">fetch</code> API vs. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">axios</code>
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`fetch` is the native browser API for making HTTP requests. `axios` is a popular, third-party, promise-based HTTP client that provides a cleaner API and advanced features out of the box.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>JSON Parsing:</strong> With <code>fetch</code>, you must manually call <code>.json()</code> on the response. <code>axios</code> automatically transforms the response data into JSON.</li>
+                        <li><strong>Error Handling:</strong> <code>fetch</code> only rejects a promise on network failures. It will successfully resolve even for 404 or 500 errors. <code>axios</code> automatically rejects the promise for any HTTP error status (4xx, 5xx).</li>
+                        <li><strong>Timeouts & Cancellation:</strong> <code>axios</code> has built-in support for request timeouts and easily canceling requests, which requires cumbersome AbortControllers in <code>fetch</code>.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// Using Fetch (More Boilerplate)
+const getUserFetch = async () => {
+  try {
+    const res = await fetch('/api/user');
+    if (!res.ok) throw new Error('HTTP status ' + res.status);
+    const data = await res.json(); // Manual parsing
+    console.log(data);
+  } catch (err) { /* handle error */ }
+};
+
+// Using Axios (Cleaner)
+import axios from 'axios';
+const getUserAxios = async () => {
+  try {
+    const res = await axios.get('/api/user');
+    console.log(res.data); // Auto-parsed!
+  } catch (err) { /* Automatically catches 404s, 500s, etc. */ }
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><code>fetch</code> is perfectly fine for simple side-projects or lightweight components that make one or two generic API calls without needing authentication wrappers.</li>
+                        <li><code>axios</code> is heavily preferred in enterprise SPAs that require global error handling, file uploads with progress tracking, and complex token authentication.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages (Axios):</strong> Less boilerplate, automatic JSON parsing, wider browser support, built-in XSRF protection.<br>
+                    <strong>Disadvantages (Axios):</strong> Adds an external dependency to your bundle size, whereas <code>fetch</code> is completely free and native to the browser.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why does a `fetch` request not trigger the `catch` block on a 404 Not Found error?</strong><br>
+                    <strong>A:</strong> The <code>fetch</code> API only considers a request "failed" (and rejects the promise) if it encounters a network error or is prevented from completing (like CORS issues or losing internet connection). An HTTP 404 or 500 is technically a successfully completed request from the browser's perspective—it successfully received the server's error response. You must manually check <code>response.ok</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                2. Setting up an Axios Client Instance
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>An Axios instance is a custom-configured copy of Axios that pre-defines settings like the Base URL, headers, and timeouts for a specific API, so you don't have to repeat them in every single request.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Instead of importing the default <code>axios</code> object, you create an instance using <code>axios.create()</code> and export it from a centralized file.</li>
+                        <li>It allows you to define the <code>baseURL</code>. When you make a request to <code>/users</code>, it automatically prepends <code>https://api.mycompany.com/v1</code>.</li>
+                        <li>You can set default headers (like <code>Content-Type: application/json</code>) that apply to all requests made by that instance.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// src/api/axiosClient.js
+import axios from 'axios';
+
+const apiClient = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || 'https://api.example.com/v1',
+  timeout: 10000, // Abort request if it takes longer than 10 seconds
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+});
+
+export default apiClient;
+
+// src/components/Users.jsx
+// Usage: No need to specify the full URL or headers!
+// const res = await apiClient.get('/users'); </code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Connecting to different microservices. You might create <code>authClient</code> for the authentication server and <code>dataClient</code> for the main database API, each with different base URLs and timeout settings.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Follows the DRY (Don't Repeat Yourself) principle. Makes environment switching (Dev vs Prod URLs) effortless.<br>
+                    <strong>Disadvantages:</strong> None. This is a mandatory best practice for any React application using Axios.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: How do you handle different API base URLs for Development, Staging, and Production?</strong><br>
+                    <strong>A:</strong> We use Environment Variables (e.g., <code>.env.development</code> and <code>.env.production</code>). In React, we prefix these with <code>REACT_APP_</code> (or <code>VITE_</code> for Vite setups). We then assign the Axios <code>baseURL</code> to <code>process.env.REACT_APP_API_URL</code>. The build tool automatically injects the correct URL based on the environment being built.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                3. Axios Interceptors (Request & Response)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Interceptors are middleware functions that React runs seamlessly right before an HTTP request is sent out (Request Interceptor), or right before the response is handed back to your `.then()` or `catch()` blocks (Response Interceptor).</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Request Interceptors:</strong> Used to modify the request config globally. The most common use case is pulling an Authentication Token from local storage and attaching it to the <code>Authorization</code> header before the request hits the network.</li>
+                        <li><strong>Response Interceptors:</strong> Used to handle global logic based on what the server sends back. You can globally format the data, or intercept global errors (like logging a user out immediately if the server returns a 401 Unauthorized).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import apiClient from './axiosClient';
+
+// --- REQUEST INTERCEPTOR ---
+apiClient.interceptors.request.use(
+  (config) => {
+    // 1. Get token from storage
+    const token = localStorage.getItem('accessToken');
+    // 2. Attach to headers if it exists
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config; // Must return config to proceed
+  },
+  (error) => Promise.reject(error)
+);
+
+// --- RESPONSE INTERCEPTOR ---
+apiClient.interceptors.response.use(
+  (response) => {
+    // We can simplify the response so components only get the raw data
+    return response.data; 
+  },
+  (error) => {
+    // Global error logging
+    console.error("API Error intercepted!", error);
+    return Promise.reject(error);
+  }
+);</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Attaching Bearer JWT tokens to every secure route.</li>
+                        <li>Triggering a global "Loading Spinner" in Redux right before a request starts, and turning it off when the response arrives.</li>
+                        <li>Centralized logging of API performance metrics.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Completely abstracts repetitive logic (like token injection and error formatting) away from your React components, keeping UI components perfectly clean.<br>
+                    <strong>Disadvantages:</strong> Errors thrown inside an interceptor can be difficult to trace in the browser's network tab if not logged properly.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What happens if an interceptor function does not explicitly `return config` (request) or `return response` (response)?</strong><br>
+                    <strong>A:</strong> The entire HTTP request lifecycle will hang and fail. Axios relies on the interceptor passing the modified configuration object down the chain. If it returns undefined, the request has no URL or headers to execute with, resulting in a crash.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 4 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                4. Handling JWT Tokens (Auth & Refreshes)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>JSON Web Tokens (JWT) are secure strings used for stateless authentication. In React, managing JWTs involves storing them, attaching them to requests, and implementing a "Token Refresh" flow to maintain security without kicking the user out.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Storage:</strong> Access tokens (short-lived, ~15 mins) are often stored in memory or <code>localStorage</code>. Refresh tokens (long-lived, ~7 days) should ideally be stored in secure, <code>HttpOnly</code> cookies managed by the backend.</li>
+                        <li><strong>The 401 Flow:</strong> When an access token expires, the server returns a <code>401 Unauthorized</code> status.</li>
+                        <li>Instead of forcing the user to log in again, an Axios Response Interceptor catches the 401.</li>
+                        <li>It pauses the original request, calls a <code>/refresh-token</code> endpoint to get a new access token, updates local storage, and then silently <em>retries</em> the original failed request with the new token.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>apiClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    // If error is 401 and we haven't already retried this request
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true; // Prevent infinite loops
+
+      try {
+        // Attempt to get a new token from the backend
+        const res = await axios.post('/api/auth/refresh');
+        const newAccessToken = res.data.accessToken;
+        
+        // Save new token
+        localStorage.setItem('accessToken', newAccessToken);
+        
+        // Update the failed request's header and retry it
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return apiClient(originalRequest); 
+      } catch (refreshError) {
+        // If refresh fails (refresh token expired), force logout
+        localStorage.clear();
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Any modern SaaS application (banking, social media, enterprise dashboards) requires this pattern so users aren't abruptly logged out every 15 minutes while working.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Provides airtight security (due to short-lived access tokens) while maintaining a seamless, uninterrupted user experience.<br>
+                    <strong>Disadvantages:</strong> Highly complex to implement properly. Edge cases occur if multiple API requests fail with 401 simultaneously (requires a queue system in the interceptor to hold requests while the token refreshes).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why is storing JWTs in `localStorage` considered a security risk?</strong><br>
+                    <strong>A:</strong> <code>localStorage</code> is vulnerable to Cross-Site Scripting (XSS) attacks. If an attacker manages to inject malicious JavaScript into your React app, that script can easily read <code>localStorage.getItem('token')</code> and steal the user's identity. The most secure architectural approach is for the backend to send the token inside an <code>HttpOnly</code> cookie, which JavaScript cannot read, completely mitigating XSS token theft.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 5 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                5. Error Handling Best Practices
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Proper error handling ensures that when an API request fails, the application doesn't crash, the UI accurately reflects the failure state, and the user receives an actionable, friendly message instead of a cryptic console error.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Standardize Errors:</strong> Backends often send specific error messages inside the response body (e.g., <code>err.response.data.message</code>).</li>
+                        <li><strong>Global vs. Local:</strong> Fatal errors (like 500 Server Error or Network Offline) should be handled globally via Axios interceptors and trigger a global Toast notification.</li>
+                        <li>Specific errors (like "Username already taken" - 400 Bad Request) should be caught locally inside the component's <code>try/catch</code> block to show inline red text beneath a specific input field.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const submitForm = async (userData) => {
+  try {
+    const data = await apiClient.post('/users', userData);
+    toast.success("User created!"); // Success UI
+  } catch (error) {
+    // 1. Check if we got a response from the server (e.g., 400 Validation Error)
+    if (error.response) {
+      const serverMsg = error.response.data.message;
+      setErrorMessage(serverMsg || "Validation failed.");
+    } 
+    // 2. The request was made but no response was received (Network error/Timeout)
+    else if (error.request) {
+      setErrorMessage("Network error. Please check your connection.");
+    } 
+    // 3. Something happened in setting up the request that triggered an Error
+    else {
+      setErrorMessage("An unexpected error occurred.");
+    }
+  }
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Displaying inline form validation errors returned from the server API.</li>
+                        <li>Redirecting users to a generic "500 Internal Server Error" page if a critical microservice goes down.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Massive improvement in User Experience and trust. Prevents users from clicking "Submit" 10 times because they don't know the server failed.<br>
+                    <strong>Disadvantages:</strong> Requires tight coordination with backend developers to ensure they return a standardized, predictable error JSON format across all API endpoints.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is the architectural difference between handling 4xx vs 5xx errors in the frontend?</strong><br>
+                    <strong>A:</strong> <code>4xx</code> errors (Client Errors like 400 Bad Request, 401 Unauthorized, 404 Not Found) imply the user did something wrong (bad password, missing fields). These should usually be handled <em>locally</em> within the component to give the user a chance to fix their input. <code>5xx</code> errors (Server Errors like 500 Internal Server Error, 503 Service Unavailable) imply the backend is broken. The user cannot fix this. These should be handled <em>globally</em>, displaying a "Try again later" toast and logging the event to a monitoring service.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

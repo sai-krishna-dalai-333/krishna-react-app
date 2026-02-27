@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1: JavaScript Prerequisites - React Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-lg">1</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">JavaScript Prerequisites</h1>
+                    <p class="text-xs text-slate-400">React Masterclass Module 1</p>
+                </div>
+            </div>
+            <a href="./syllabus.html"  class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors border border-white/20">
+                ← Back to Roadmap
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Intro Note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+            <p class="text-sm leading-relaxed">
+                <strong>📝 How to use this guide:</strong> This document contains detailed notes following a strict 6-point format. Each concept is broken down into its Definition, Explanation, Code Example, Real-world Usage, Pros/Cons, and finally, crucial <strong>Interview Corner</strong> insights.
+            </p>
+        </div>
+
+        <!-- Topic 1 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                1. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">let</code>, <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">const</code>, and Scope (Closures in React)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`let` and `const` are ES6 block-scoped variable declarations that replace `var`. A closure is a function's ability to "remember" the variables from its lexical scope even after the outer function has finished executing.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Block-scoped means variables only exist within the <code>{ }</code> brackets they are declared in.</li>
+                        <li><code>let</code> allows reassignment; <code>const</code> prevents reassignment of the variable identifier (though objects/arrays held in a <code>const</code> can still be mutated).</li>
+                        <li>In React, every functional component render creates a new closure. Hooks like <code>useEffect</code> rely heavily on closures to access the state variables from that specific render cycle.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>function CounterComponent() {
+  const [count, setCount] = useState(0); // const used for state reference
+  
+  const handleDelayedLog = () => {
+    // This setTimeout forms a closure over the specific 'count' variable
+    setTimeout(() => {
+      console.log("Count at time of click:", count);
+    }, 2000);
+  };
+  // ...
+}</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Always using <code>const</code> for importing components, declaring configuration objects, and defining state.</li>
+                        <li>Using closures inside <code>useEffect</code> cleanup functions to remember the exact ID of a subscription to clear it when unmounting.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Eliminates variable hoisting bugs associated with <code>var</code>. Promotes immutability.<br>
+                    <strong>Disadvantages:</strong> Closures in React can become "stale" (referencing old data) if hook dependency arrays are not managed correctly.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is a Stale Closure in React?</strong><br>
+                    <strong>A:</strong> It occurs when an async function (like <code>setInterval</code> or an event listener) is created inside a component but captures the state from the <em>initial</em> render. When state updates, the closure still looks at the old value. <strong>Solution:</strong> Use the functional update form of <code>setState</code> (e.g., <code>setCount(prev => prev + 1)</code>) or ensure variables are in the dependency array.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                2. Arrow Functions and <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">this</code> context
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Arrow functions (`=>`) provide a concise syntax for writing function expressions and do not bind their own `this` context, inheriting it lexically from their parent scope.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>They omit the <code>function</code> keyword.</li>
+                        <li>If there's only one parameter, parentheses are optional. If one expression, curly braces and <code>return</code> are optional (implicit return).</li>
+                        <li>They lack the <code>arguments</code> object.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// Implicit return, great for React component maps
+const UserList = ({ users }) => (
+  &lt;ul&gt;
+    {users.map(user => &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;)}
+  &lt;/ul&gt;
+);
+
+// Arrow function for event handling
+const handleClick = (event) => {
+  console.log("Button clicked!");
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Passing inline callbacks: <code>onClick={() => setIsOpen(true)}</code>.</li>
+                        <li>Defining standard React Functional Components.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Highly readable. Prevents bugs related to losing the <code>this</code> context.<br>
+                    <strong>Disadvantages:</strong> Cannot be used as constructor functions or methods that require dynamic <code>this</code> binding.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why did we need `bind(this)` in older React Class components, but not with arrow functions?</strong><br>
+                    <strong>A:</strong> Standard functions create their own <code>this</code> based on how they are invoked. Passing a standard method to <code>onClick</code> invoked it globally, making <code>this</code> undefined. Arrow functions use lexical scoping, permanently locking <code>this</code> to the component instance where they were defined.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                3. Template Literals and Object/Array Destructuring
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Template literals allow embedded expressions (`${}`) in strings. Destructuring is a syntax to extract values from arrays or properties from objects directly into distinct variables.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Template literals support multi-line strings without ugly concatenations.</li>
+                        <li>Object destructuring uses <code>{ }</code> and maps by key name. You can alias names and set default values.</li>
+                        <li>Array destructuring uses <code>[ ]</code> and maps strictly by position/order.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// Template Literal
+const theme = "dark";
+const divClass = `container ${theme === "dark" ? "bg-black text-white" : ""}`;
+
+// Object Destructuring (with default value and alias)
+const UserProfile = ({ user }) => {
+  const { name, role: userRole = "Guest" } = user;
+  return &lt;div&gt;{name} is a {userRole}&lt;/div&gt;;
+};
+
+// Array Destructuring
+const [count, setCount] = useState(0);</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Creating dynamic class names and building API URLs.</li>
+                        <li>Cleanly extracting properties from the <code>props</code> object in a component's parameter list.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Massively reduces boilerplate. Code looks much cleaner.<br>
+                    <strong>Disadvantages:</strong> Deeply nested object destructuring can cause app crashes if intermediate objects are null/undefined.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: How does `useState` utilize array destructuring?</strong><br>
+                    <strong>A:</strong> <code>useState</code> returns an array with exactly two elements: the value and a setter. By using array destructuring, we assign the first item to our chosen variable name and the second to the setter. We use an array instead of an object so the developer can name these freely based on position.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 4 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                4. Spread (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">...</code>) and Rest Operators
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>The Spread operator expands an iterable into its individual elements. The Rest operator collects multiple elements and condenses them into a single array or object.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Spread</strong> is used to unpack elements. Crucial for making shallow copies of React state objects to maintain immutability.</li>
+                        <li><strong>Rest</strong> is used in function definitions to gather remaining arguments, or in destructuring to grab "the rest" of the properties.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// Spread: Updating State (Immutability)
+const [user, setUser] = useState({ name: 'Alex', age: 25, city: 'NY' });
+const updateAge = () => {
+  // Spread existing user properties, then overwrite age
+  setUser(prev => ({ ...prev, age: 26 })); 
+};
+
+// Rest: Component Props
+const CustomInput = ({ label, ...restProps }) => (
+  &lt;div&gt;
+    &lt;label&gt;{label}&lt;/label&gt;
+    &lt;input {...restProps} className="styled-input" /&gt;
+  &lt;/div&gt;
+);</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Passing down native HTML attributes to wrapper components without redeclaring them all.</li>
+                        <li>Merging two arrays together.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Crucial for strict state immutability. Clean syntax for merging.<br>
+                    <strong>Disadvantages:</strong> Only performs a <strong>shallow copy</strong>. Nested objects still share the same memory reference.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why is spreading an object in React state sometimes not enough?</strong><br>
+                    <strong>A:</strong> Because <code>...</code> is a shallow copy. If state is deeply nested, doing <code>{ ...data, user: { ...data.user, address: 'LA' } }</code> becomes necessary, which is ugly. Mention alternatives like <code>structuredClone</code> or <code>Immer</code> for nested state.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 5 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                5. High-Order Array Methods
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Array methods like `map`, `filter`, and `reduce` accept a function as an argument (callback) to iterate over, transform, or aggregate data without mutating the original array.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><code>map</code>: Returns a new array of the exact same length, transforming each item.</li>
+                        <li><code>filter</code>: Returns a new array containing only items that pass a test.</li>
+                        <li><code>reduce</code>: Accumulates elements into a single value.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const users = [
+  { id: 1, name: 'Alice', active: true, score: 10 },
+  { id: 2, name: 'Bob', active: false, score: 20 },
+];
+
+// map (Rendering JSX)
+const userCards = users.map(u => &lt;div key={u.id}&gt;{u.name}&lt;/div&gt;);
+
+// filter (Conditional Logic)
+const activeUsers = users.filter(u => u.active);
+
+// reduce (Aggregation)
+const totalScore = users.reduce((acc, curr) => acc + curr.score, 0);</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><code>map</code> is the ONLY way to dynamically render lists of JSX.</li>
+                        <li><code>filter</code> for search bars or removing an item from state.</li>
+                        <li><code>reduce</code> for cart totals.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Declarative syntax. Preserves immutability.<br>
+                    <strong>Disadvantages:</strong> Chaining multiple methods iterates over the list multiple times, which can be slightly slower on massive datasets than a single <code>for</code> loop.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What happens if you forget to `return` inside a `map` callback?</strong><br>
+                    <strong>A:</strong> <code>map</code> constructs a new array, but every element will be <code>undefined</code>. In React, it will render nothing and might throw a key error.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 6 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                6. Promises, <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">async/await</code>, and Error Handling
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Promises represent the eventual completion of an async operation. `async/await` is syntactic sugar over Promises making code look synchronous. `try/catch` catches errors.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>A Promise is Pending, Fulfilled, or Rejected.</li>
+                        <li>Marking a function <code>async</code> automatically returns a Promise.</li>
+                        <li><code>await</code> pauses execution until the Promise settles.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const fetchUserData = async (userId) => {
+  try {
+    const response = await fetch(`https://api.com/users/${userId}`);
+    if (!response.ok) throw new Error("Network response was not ok");
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch user:", error.message);
+  }
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Used inside <code>useEffect</code> to fetch data on mount.</li>
+                        <li>Submitting form data to a server.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Prevents "callback hell" (<code>.then().catch()</code>).<br>
+                    <strong>Disadvantages:</strong> You cannot use <code>await</code> directly inside a top-level React component; must be inside a <code>useEffect</code>.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Can you pass an `async` function directly to `useEffect`?</strong><br>
+                    <strong>A:</strong> No. <code>useEffect</code> expects its callback to return either nothing or a cleanup function. An <code>async</code> function always returns a Promise. You must define the async function <em>inside</em> the <code>useEffect</code> and call it immediately.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 7 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                7. Modules (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">import/export</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>ES6 Modules split JS code into files. `export` makes functions/objects available outside; `import` brings them in.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Named Exports:</strong> Export multiple items. Must import with exact names inside <code>{}</code>.</li>
+                        <li><strong>Default Exports:</strong> Only ONE per file. You can name it whatever you want upon import.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// --- utils.js ---
+export const formatDate = (date) => { ... }; // Named
+const calculateTax = (amount) => { ... };
+export default calculateTax; // Default
+
+// --- App.jsx ---
+import TaxCalculator, { formatDate } from './utils';</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Every React component is typically built in its own file and exported.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Code splitting, reusability, scoping.<br>
+                    <strong>Disadvantages:</strong> Can lead to messy import headers if folder structure is poor.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: When would you prefer Named exports over Default exports?</strong><br>
+                    <strong>A:</strong> Named exports enforce consistent naming across the codebase and provide better IDE auto-completion. Default exports can be accidentally imported with different names, causing confusion.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 8 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                8. Short-circuit evaluation & Optional Chaining
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Logical operators evaluate conditions safely. `&&`, `||`, `??` (Nullish Coalescing), and `?.` (Optional Chaining) prevent crashes on missing data.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><code>&&</code>: Returns B if A is truthy (conditional rendering).</li>
+                        <li><code>||</code>: Returns B if A is falsy (fallbacks).</li>
+                        <li><code>??</code>: Returns B only if A is <code>null</code> or <code>undefined</code>.</li>
+                        <li><code>?.</code>: Stops evaluating and returns undefined if object is missing.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>const UserDashboard = ({ user, isLoading }) => {
+  return (
+    &lt;div&gt;
+      {/* 1. Conditional Rendering */}
+      {isLoading && &lt;Spinner /&gt;}
+
+      {/* 2. Optional Chaining and Fallback */}
+      &lt;h1&gt;Welcome, {user?.profile?.firstName || "Guest"}&lt;/h1&gt;
+
+      {/* 3. Nullish Coalescing - Allows '0' to be valid */}
+      &lt;p&gt;Account Balance: {user?.balance ?? 'N/A'}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Waiting for API data to load safely (e.g., <code>data?.map()</code>).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Reduces verbose <code>if/else</code> blocks inside JSX.<br>
+                    <strong>Disadvantages:</strong> Overusing <code>&&</code> can sometimes accidentally render a <code>0</code> on the screen if the condition evaluates to the number 0.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Difference between `||` and `??`?</strong><br>
+                    <strong>A:</strong> <code>||</code> checks for <em>any</em> falsy value (0, "", false). <code>??</code> checks <em>only</em> for null/undefined. If state is <code>0</code>, <code>count || 10</code> evaluates to 10. <code>count ?? 10</code> evaluates to 0.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

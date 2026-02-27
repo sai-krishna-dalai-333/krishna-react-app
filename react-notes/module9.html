@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 9: Global Client State (Redux Toolkit) - React Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-lg">9</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Global Client State (Redux Toolkit)</h1>
+                    <p class="text-xs text-slate-400">React Masterclass Module 9</p>
+                </div>
+            </div>
+            <a href="./syllabus.html"  class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors border border-white/20">
+                ← Back to Roadmap
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Intro Note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+            <p class="text-sm leading-relaxed">
+                <strong>📝 How to use this guide:</strong> While React Query handles <em>Server State</em> (API data), Redux Toolkit (RTK) is the industry standard for managing complex <em>Client State</em> (UI toggles, multi-step forms, global audio players). Interviewers love to ask about the differences between Context API and Redux, as well as how RTK solves traditional Redux boilerplate issues.
+            </p>
+        </div>
+
+        <!-- Topic 1 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                1. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useContext</code> vs. Redux (When to use which?)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useContext` is a built-in React hook for Dependency Injection to avoid prop-drilling. Redux is an external state management architecture (a strict state machine) designed for highly predictable state updates.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Context API</strong> is a way to pass data deeply into the tree. By default, it has no concept of "fine-grained reactivity"—if the context value changes, <em>every</em> component reading that context will re-render, even if they only needed a small piece of it.</li>
+                        <li><strong>Redux</strong> sits completely outside the React tree. Components "subscribe" to very specific slices of data. If `state.theme` updates, only components subscribed to `state.theme` re-render; components subscribed to `state.user` do not.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// 1. Context (Good for static/slow-changing data)
+const ThemeContext = createContext();
+// Triggers re-renders across the entire app when theme changes
+&lt;ThemeContext.Provider value={theme}&gt;...&lt;/ThemeContext.Provider&gt;
+
+// 2. Redux (Good for fast/frequent state changes)
+// Component only re-renders if 'count' changes, ignoring other state
+const count = useSelector(state => state.counter.count);</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Use Context:</strong> Theme settings (Dark/Light), User Auth status (Logged In/Out), Localization settings.</li>
+                        <li><strong>Use Redux:</strong> Complex multi-step checkout forms, global music/video player states, canvas dragging/dropping coordinates (fast-moving UI data).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages (Redux):</strong> Performance optimization at scale. Time-travel debugging.<br>
+                    <strong>Disadvantages (Redux):</strong> Requires significantly more setup, boilerplate, and mental overhead compared to a simple Context Provider.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: "Context API replaces Redux." Is this statement true or false?</strong><br>
+                    <strong>A:</strong> False. They solve different problems. Context solves <em>prop-drilling</em>. Redux solves <em>state management and performance</em>. Context is not a state manager; it is just a transport mechanism. You still have to manage the state yourself using <code>useState</code> or <code>useReducer</code> at the top level before passing it into Context.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                2. Redux Core Concepts vs. Redux Toolkit (RTK)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Redux is the architectural pattern (Store, Actions, Reducers). Redux Toolkit (RTK) is the official, opinionated toolset designed by the Redux team to make writing Redux logic easier and less verbose.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Store:</strong> The global Javascript object holding all the state.</li>
+                        <li><strong>Actions:</strong> Objects describing what happened (e.g., <code>{ type: 'counter/increment' }</code>).</li>
+                        <li><strong>Reducers:</strong> Pure functions that take the current state and an action, and return a completely new state object.</li>
+                        <li><strong>The RTK Difference:</strong> Legacy Redux required manually creating action types, action creators, and writing massive <code>switch</code> statements. RTK automates all of this. It also includes <em>Immer.js</em> under the hood, allowing you to write "mutating" logic safely.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// Legacy Redux (Do NOT do this anymore)
+const counterReducer = (state = { value: 0 }, action) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      // Manual immutable copying
+      return { ...state, value: state.value + 1 }; 
+    default:
+      return state;
+  }
+};
+
+// RTK Way (Under the hood, Immer makes this safe and immutable)
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) => {
+      state.value += 1; // Looks like a mutation, but it's safe!
+    }
+  }
+});</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>RTK is now the absolute standard. If you start a new React project and need Redux, you use <code>@reduxjs/toolkit</code>.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages (RTK):</strong> Cuts boilerplate by 70%. Eliminates accidental state mutations (the #1 cause of Redux bugs).<br>
+                    <strong>Disadvantages:</strong> "Magic" abstraction. Juniors might learn RTK without understanding the core Redux unidirectional data flow principles underneath.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why are Reducers required to be "Pure Functions"?</strong><br>
+                    <strong>A:</strong> A pure function must always return the exact same output for the same input, and it must have absolutely no side effects (no API calls, no mutating external variables). Redux relies on pure functions because it determines if the UI needs to re-render by doing a shallow strict equality check (<code>oldState === newState</code>). If you mutate the old state, the reference stays the same, and React will completely fail to re-render.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                3. Setting up an RTK Store (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">configureStore</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`configureStore` is the RTK API used to create the central Redux store. It automatically wraps standard Redux `createStore` and sets up developer tools and standard middlewares.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>It accepts a single configuration object.</li>
+                        <li>You pass all your different slice reducers into the <code>reducer</code> property, which automatically combines them (acting like the old <code>combineReducers</code>).</li>
+                        <li>It automatically enables the Redux DevTools browser extension.</li>
+                        <li>It automatically adds <code>redux-thunk</code> middleware to allow asynchronous actions.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// src/store/index.js
+import { configureStore } from '@reduxjs/toolkit';
+import cartReducer from '../features/cart/cartSlice';
+import userReducer from '../features/user/userSlice';
+
+export const store = configureStore({
+  reducer: {
+    cart: cartReducer, // state.cart
+    user: userReducer, // state.user
+  },
+});
+
+// src/index.js
+import { Provider } from 'react-redux';
+import { store } from './store';
+
+root.render(
+  &lt;Provider store={store}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;
+);</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>This is the absolute first step you take when setting up Redux in a brand new enterprise React application.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Turns a previously 20-line, highly complex setup file (importing thunk, applying middleware, composing devtools) into a 5-line clean object.<br>
+                    <strong>Disadvantages:</strong> None. It is the definitive way to start Redux.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is Middleware in the context of Redux?</strong><br>
+                    <strong>A:</strong> Middleware provides a third-party extension point between dispatching an action and the moment it reaches the reducer. It is used for logging, crash reporting, routing, and especially for handling asynchronous API requests (like Redux Thunk or Saga) before allowing the final data to hit the synchronous reducers.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 4 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                4. Creating Slices (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">createSlice</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`createSlice` is a function that accepts an initial state, an object of reducer functions, and a "slice name", and automatically generates action creators and action types that correspond to the reducers and state.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>In legacy Redux, you had three separate files: <code>actions.js</code>, <code>constants.js</code>, and <code>reducer.js</code>. <code>createSlice</code> combines these all into one standard "feature slice" file.</li>
+                        <li>The <code>name</code> string is used to prefix the generated action types (e.g., name 'cart' + reducer 'addItem' = action type <code>cart/addItem</code>).</li>
+                        <li>You export the generated actions for the components to use, and export the reducer for the <code>configureStore</code> to use.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { createSlice } from '@reduxjs/toolkit';
+
+const cartSlice = createSlice({
+  name: 'cart',
+  initialState: { items: [], total: 0 },
+  reducers: {
+    // Action Creator is auto-generated based on this key name
+    addItem: (state, action) => {
+      // action.payload contains the data passed in from the component
+      state.items.push(action.payload);
+      state.total += action.payload.price;
+    },
+    clearCart: (state) => {
+      state.items = [];
+      state.total = 0;
+    }
+  }
+});
+
+// Export the Actions for components to dispatch
+export const { addItem, clearCart } = cartSlice.actions;
+
+// Export the Reducer for the Store
+export default cartSlice.reducer;</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Managing complex, localized domains of your app (e.g., <code>authSlice</code> for user session, <code>videoPlayerSlice</code> for volume, playback status, and current time).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> The "Ducks Pattern" in one function. Massively improves developer velocity and code readability.<br>
+                    <strong>Disadvantages:</strong> Slices can become massive if a feature has too much state. It's important to break them down logically.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Under the hood, how does `createSlice` allow you to write `state.items.push()` without breaking Redux's strict immutability rules?</strong><br>
+                    <strong>A:</strong> It uses a library called <strong>Immer</strong>. Immer wraps the state in a JavaScript Proxy object. It watches you "mutate" this proxy (like calling <code>.push()</code>), tracks all those changes, and then behind the scenes, securely generates a brand-new immutable copy of the state with those changes applied. You write mutating code; Redux gets immutable data.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 5 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                5. Consuming State (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useSelector</code>) & Dispatching (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useDispatch</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>These are the two primary React-Redux hooks. `useSelector` reads data from the store and subscribes to updates. `useDispatch` returns a function that lets you send actions to the store to trigger state changes.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><code>useSelector</code> takes a selector function (e.g., <code>state => state.cart.total</code>). It ensures the component <em>only</em> re-renders when that specific piece of state changes.</li>
+                        <li><code>useDispatch</code> gives you the <code>dispatch</code> function. You must pass an Action Creator (imported from your slice) into it to update the store.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { useSelector, useDispatch } from 'react-redux';
+import { addItem } from '../features/cart/cartSlice';
+
+const ProductCard = ({ product }) => {
+  // 1. Read the state (Re-renders if 'total' changes)
+  const cartTotal = useSelector((state) => state.cart.total);
+  
+  // 2. Get the dispatch trigger
+  const dispatch = useDispatch();
+
+  const handleBuy = () => {
+    // 3. Dispatch the action with a payload
+    dispatch(addItem(product));
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;{product.name}&lt;/h3&gt;
+      &lt;button onClick={handleBuy}&gt;Add to Cart (Current Total: ${cartTotal})&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Used inside literally every single React component that needs to interact with Redux. Replaces the legacy <code>connect()</code> Higher-Order Component and <code>mapStateToProps</code>.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Hooks are incredibly clean and easy to compose compared to the old <code>connect()</code> wrappers.<br>
+                    <strong>Disadvantages:</strong> If you write a bad selector (e.g., returning a brand new object every time like <code>useSelector(state => ({...state.cart}))</code>), you will cause infinite re-render loops.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why should you extract the smallest piece of state possible with `useSelector` instead of grabbing the whole object?</strong><br>
+                    <strong>A:</strong> <code>useSelector</code> uses strict equality (<code>===</code>) to determine if it should force a re-render. If you do <code>const cart = useSelector(state => state.cart)</code>, your component will re-render anytime <em>anything</em> in the cart changes. If you only need the item count, writing <code>useSelector(state => state.cart.items.length)</code> guarantees the component only re-renders if the length changes, saving massive amounts of performance.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 6 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                6. Asynchronous Redux (<code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">createAsyncThunk</code>)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`createAsyncThunk` is an RTK API that handles asynchronous lifecycles. It accepts an action type string and a promise-returning function (like an API call), and generates `pending`, `fulfilled`, and `rejected` action types automatically.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Because Reducers must be synchronous pure functions, you cannot put an API `fetch` inside a slice reducer.</li>
+                        <li>You create a Thunk outside the slice. The Thunk handles the API call.</li>
+                        <li>Inside the slice, you use <code>extraReducers</code> to "listen" for the Thunk's lifecycle stages and update the state accordingly (e.g., setting <code>isLoading = true</code> on pending, and saving the data on fulfilled).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
+
+// 1. Create the Async Thunk
+export const fetchUser = createAsyncThunk('user/fetchUser', async (userId) => {
+  const response = await axios.get(`/api/users/${userId}`);
+  return response.data; // This becomes action.payload in fulfilled
+});
+
+// 2. Handle the lifecycles in the Slice
+const userSlice = createSlice({
+  name: 'user',
+  initialState: { data: null, status: 'idle' },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.data = action.payload;
+      })
+      .addCase(fetchUser.rejected, (state) => {
+        state.status = 'failed';
+      });
+  },
+});</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Traditionally used for absolutely all API fetching in Redux applications before React Query became popular.</li>
+                        <li>Currently best used for complex async flows that aren't strictly API fetches (like complex IndexedDB interactions, or multi-step async file parsing in the browser).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Standardizes async behavior in Redux. Removes the need to manually write and dispatch 3 different actions for every API call.<br>
+                    <strong>Disadvantages:</strong> Still highly verbose compared to React Query. Doesn't offer built-in cache invalidation or automatic refetching.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: With the rise of React Query (TanStack Query), is Redux Thunk obsolete?</strong><br>
+                    <strong>A:</strong> For <em>data fetching</em>, yes, React Query/RTK Query is vastly superior and has mostly made Thunks obsolete. However, Redux Thunk is still valuable for triggering complex, multi-step asynchronous business logic where the primary goal is updating various different client UI states sequentially, rather than just pulling data from a database.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

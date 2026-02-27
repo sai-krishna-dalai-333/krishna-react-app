@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 8: Server State Management (React Query) - React Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-lg">8</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Server State Management (React Query)</h1>
+                    <p class="text-xs text-slate-400">React Masterclass Module 8</p>
+                </div>
+            </div>
+            <a href="./syllabus.html" class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors border border-white/20">
+                ← Back to Roadmap
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Intro Note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+            <p class="text-sm leading-relaxed">
+                <strong>📝 How to use this guide:</strong> Historically, developers used Redux to store data fetched from APIs. Today, the industry has shifted to separating "Client State" (UI toggles) from "Server State" (API data). <strong>TanStack Query (React Query)</strong> is the undisputed king of Server State. Interviewers will highly value your understanding of caching, background fetching, and query invalidation.
+            </p>
+        </div>
+
+        <!-- Topic 1 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                1. What is React Query & Why do we need it?
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>React Query (now TanStack Query) is a powerful data-fetching and state management library that specifically handles asynchronous operations, caching, background updates, and stale data synchronization between the server and the client.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>The Problem:</strong> Using `useEffect` and `useState` to fetch data requires manual tracking of `isLoading`, `isError`, and `data` states. Furthermore, `useEffect` fetches data every time a component mounts, leading to redundant network requests.</li>
+                        <li><strong>The Solution:</strong> React Query caches the API response. If you navigate to another page and come back, it instantly shows the cached data while secretly refetching in the background to ensure it's up-to-date.</li>
+                        <li>It cleanly separates <strong>Server State</strong> (data owned by the database) from <strong>Client State</strong> (data owned by the UI, like a dark mode toggle).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// The Old Way (Boilerplate Hell)
+const [data, setData] = useState(null);
+const [isLoading, setIsLoading] = useState(true);
+const [error, setError] = useState(null);
+useEffect(() => {
+  fetchData().then(setData).catch(setError).finally(() => setIsLoading(false));
+}, []);
+
+// The React Query Way
+const { data, isLoading, error } = useQuery({ 
+  queryKey: ['users'], 
+  queryFn: fetchUsers 
+});</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Any application that communicates with a REST or GraphQL API.</li>
+                        <li>Dashboards where multiple components on the same page need the exact same API data (React Query automatically deduplicates the requests into a single network call).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Eliminates hundreds of lines of boilerplate code. Provides aggressive caching, automatic retries on failure, and window-focus refetching out of the box.<br>
+                    <strong>Disadvantages:</strong> Caching invalidation logic can get complex in highly mutating applications. Adds to bundle size.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why is it an anti-pattern to store API response data in Redux nowadays?</strong><br>
+                    <strong>A:</strong> Server data is inherently out-of-sync the moment it hits the client. Redux requires you to manually write actions and reducers to fetch, store, and update this data, but it offers no built-in caching or background refetching mechanics. React Query is designed explicitly for the asynchronous, shared nature of Server State, leaving Redux to handle purely synchronous UI state.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                2. Setting up QueryClient and QueryClientProvider
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>The `QueryClient` is the core engine that manages queries, caching, and state. The `QueryClientProvider` is a Context provider that makes this engine accessible to your entire React component tree.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>You must instantiate a <code>new QueryClient()</code> outside of your App component (or wrap it in a `useState` / `useRef` if inside) so it doesn't get recreated on every render.</li>
+                        <li>You can pass default options to the <code>QueryClient</code> to configure global behaviors, such as how long data stays fresh (<code>staleTime</code>) or how many times it should retry failed requests.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'; // Bonus!
+
+// 1. Create a client with global defaults
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // Data is "fresh" for 5 minutes
+      retry: 2, // Retry failed requests twice before showing an error
+      refetchOnWindowFocus: false, // Don't refetch when user switches browser tabs
+    },
+  },
+});
+
+const App = () => {
+  // 2. Wrap your application
+  return (
+    &lt;QueryClientProvider client={queryClient}&gt;
+      &lt;MainApplication /&gt;
+      &lt;ReactQueryDevtools initialIsOpen={false} /&gt; {/* Visual cache debugger */}
+    &lt;/QueryClientProvider&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Configuring global retry logic so a minor network blip doesn't instantly show a red error screen to the user.</li>
+                        <li>Wrapping the root <code>index.js</code> or <code>main.jsx</code> file to enable React Query across all routes.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Centralizes cache configuration. The React Query Devtools are legendary for debugging API states visually.<br>
+                    <strong>Disadvantages:</strong> Global defaults might not suit every single endpoint, requiring you to carefully override settings on specific queries.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Where is the React Query cache actually stored? Is it in localStorage?</strong><br>
+                    <strong>A:</strong> By default, the cache is stored strictly in <strong>JavaScript memory (RAM)</strong> within the <code>QueryClient</code> instance. It does not persist in <code>localStorage</code> across hard browser refreshes (though TanStack provides an experimental persister plugin if you explicitly want that behavior).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                3. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useQuery</code>: Fetching & Caching
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>`useQuery` is the primary hook used to fetch and cache data from a server. It requires a unique `queryKey` and an asynchronous `queryFn`.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>queryKey:</strong> An array (e.g., <code>['users', userId]</code>) that uniquely identifies the cache entry. If the variables in the key change, React Query automatically triggers a new fetch.</li>
+                        <li><strong>queryFn:</strong> The actual asynchronous function (using Axios or Fetch) that returns a Promise resolving to data.</li>
+                        <li><strong>staleTime vs gcTime (cacheTime):</strong> <code>staleTime</code> is how long data is considered "fresh" before a background refetch is triggered. <code>gcTime</code> is how long inactive/unmounted data stays in RAM before being garbage collected and deleted completely.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+
+const fetchUserById = async (id) => {
+  const { data } = await axios.get(`/api/users/${id}`);
+  return data;
+};
+
+const UserProfile = ({ userId }) => {
+  const { data: user, isLoading, isError, error } = useQuery({
+    queryKey: ['user', userId], // Key depends on the ID!
+    queryFn: () => fetchUserById(userId),
+    staleTime: 60000, // Data remains fresh for 1 minute
+  });
+
+  if (isLoading) return &lt;Spinner /&gt;;
+  if (isError) return &lt;p&gt;Error: {error.message}&lt;/p&gt;;
+
+  return &lt;h1&gt;{user.name}&lt;/h1&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Fetching paginated data where the <code>queryKey</code> looks like <code>['posts', { page: 2 }]</code>.</li>
+                        <li>Automatically deduping requests: If ComponentA and ComponentB both call <code>useQuery(['settings'])</code> at the exact same time, only ONE network request is actually sent.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Exposes exact UI states (<code>isLoading</code> vs <code>isFetching</code>). Drastically speeds up perceived app performance via caching.<br>
+                    <strong>Disadvantages:</strong> Query keys must be meticulously organized. If you misspell a query key, caching and invalidation will fail silently.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is the exact difference between `isLoading` and `isFetching` in React Query?</strong><br>
+                    <strong>A:</strong> <code>isLoading</code> is <strong>true</strong> ONLY when the query is fetching for the very first time and there is absolutely no cached data to display. <code>isFetching</code> is <strong>true</strong> ANYTIME a background network request is currently in flight. If you have cached data, navigating back to a page will show the UI instantly (<code>isLoading: false</code>), but <code>isFetching</code> will be <strong>true</strong> while it silently updates the cache in the background.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 4 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                4. <code class="bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-lg">useMutation</code>: Creating & Updating Data
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>While `useQuery` is for reading data (GET), `useMutation` is used for creating, updating, or deleting data (POST, PUT, DELETE). It handles the lifecycle of an action that modifies server state.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Unlike <code>useQuery</code>, mutations do NOT run automatically on render. They return a <code>mutate</code> function that you must trigger manually (e.g., on a button click).</li>
+                        <li>Mutations don't use <code>queryKeys</code> for caching, because you generally don't cache the result of a POST request.</li>
+                        <li>It provides highly useful callback hooks: <code>onMutate</code> (fires before request), <code>onSuccess</code>, <code>onError</code>, and <code>onSettled</code>.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+
+const CreatePostForm = () => {
+  const mutation = useMutation({
+    mutationFn: (newPost) => axios.post('/api/posts', newPost),
+    onSuccess: (data) => {
+      // Fires if the network request succeeds
+      alert("Post created successfully!");
+    },
+    onError: (error) => {
+      alert("Failed to create post.");
+    }
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Trigger the mutation manually, passing the variables
+    mutation.mutate({ title: 'New Post', content: 'Hello World' });
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;button type="submit" disabled={mutation.isPending}&gt;
+        {mutation.isPending ? 'Saving...' : 'Create Post'}
+      &lt;/button&gt;
+    &lt;/form&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Submitting a login form, creating a new task in a Todo list, or deleting an image from a gallery.</li>
+                        <li>Disabling a submit button automatically while <code>mutation.isPending</code> is true to prevent double-submissions.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Provides a standardized API for handling loading/error states during form submissions, completely replacing messy <code>try/catch</code> blocks in UI components.<br>
+                    <strong>Disadvantages:</strong> Doesn't automatically update the UI after a successful save. You must manually trigger a cache invalidation (see next topic).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is "Optimistic Updates" using `useMutation`?</strong><br>
+                    <strong>A:</strong> An optimistic update is when you update the UI <em>before</em> the server responds. Inside <code>onMutate</code>, you manually manipulate the React Query cache to show the new item instantly (giving a snappy user experience). If the request fails (caught in <code>onError</code>), you automatically roll the cache back to its previous state.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 5 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                5. Query Invalidation
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>Query Invalidation is the process of telling React Query that specific cached data is now outdated (stale). This forces React Query to automatically refetch that data in the background to update the UI.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>When you successfully create a new Post via <code>useMutation</code>, the cache for your <code>useQuery(['posts'])</code> is now outdated (it doesn't have the new post).</li>
+                        <li>Instead of manually adding the item to the cache, you use <code>queryClient.invalidateQueries({ queryKey: ['posts'] })</code>.</li>
+                        <li>React Query sees the cache is invalid, executes a background refetch for `['posts']`, and automatically updates your UI components with the fresh data.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+
+const useCreatePost = () => {
+  // 1. Get access to the global query client
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (newPost) => axios.post('/api/posts', newPost),
+    onSuccess: () => {
+      // 2. Invalidate the 'posts' query to trigger a refetch
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    }
+  });
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Clicking a "Delete User" button in an admin table. On success, you invalidate the <code>['users']</code> table query so the deleted user instantly disappears from the grid.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Keeps the UI perfectly synchronized with the backend with almost zero manual state management.<br>
+                    <strong>Disadvantages:</strong> Invalidation triggers a new network request. If the payload is massive, an "Optimistic Update" (manually updating cache without a refetch) might save bandwidth.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: How does Query Invalidation matching work? Will invalidating `['users']` also invalidate `['users', 5]`?</strong><br>
+                    <strong>A:</strong> Yes, by default, query invalidation uses "fuzzy matching". If you invalidate the key <code>['users']</code>, React Query will invalidate <em>any</em> query key that starts with that array. This means <code>['users']</code>, <code>['users', 5]</code>, and <code>['users', { status: 'active' }]</code> will all be refetched automatically.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 6 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                6. Integrating Custom Axios Client with React Query
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>This is the ultimate enterprise pattern. It combines the powerful HTTP interceptors and token management of Axios with the caching and UI synchronization capabilities of React Query.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>React Query is backend agnostic—it doesn't care *how* you fetch data, it just needs a Promise.</li>
+                        <li>By passing an Axios Instance (from Module 7) into React Query's `queryFn`, you ensure that all fetches automatically utilize your BaseURLs, JWT token injections, and global 401 refresh flows.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// src/api/axiosClient.js
+import axios from 'axios';
+export const apiClient = axios.create({ baseURL: 'https://api.com' });
+// ... interceptor logic here ...
+
+// src/hooks/useUsers.js
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '../api/axiosClient';
+
+// Clean, modular custom hook integrating both technologies
+export const useUsers = () => {
+  return useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      // apiClient automatically injects JWT tokens
+      const { data } = await apiClient.get('/users');
+      return data; // React query caches this data
+    }
+  });
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>This exact combination is used in almost all highly scalable, secure, modern React architectures (replacing the older Redux + Redux Thunk + Fetch architectures).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Ultimate separation of concerns. Axios handles the low-level networking and security. React Query handles the high-level caching and component synchronization.<br>
+                    <strong>Disadvantages:</strong> Requires understanding two distinct library APIs and making sure error throwing in Axios properly rejects Promises so React Query registers the <code>isError</code> state.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: If Axios catches a 500 server error in an interceptor, how does React Query know about it?</strong><br>
+                    <strong>A:</strong> For React Query to know a request failed and trigger its <code>isError</code> state, the <code>queryFn</code> must throw an error (or return a rejected promise). Therefore, inside your Axios response interceptor, if an error occurs, you must absolutely return <code>Promise.reject(error)</code>. If you just log it and don't reject it, React Query will think the request succeeded with empty data.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

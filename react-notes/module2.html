@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2: React Fundamentals & Under the Hood - React Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        pre, code { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-16">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-lg">2</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">React Fundamentals & "Under the Hood"</h1>
+                    <p class="text-xs text-slate-400">React Masterclass Module 2</p>
+                </div>
+            </div>
+            <a href="./syllabus.html" class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors border border-white/20">
+                ← Back to Roadmap
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Intro Note -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 text-blue-900">
+            <p class="text-sm leading-relaxed">
+                <strong>📝 How to use this guide:</strong> This module transitions from JavaScript into the core architecture of React. Understanding the concepts here (Virtual DOM, Fiber, Reconciliation) is what separates a junior developer who "just writes code" from a senior developer who understands <strong>how</strong> the code executes.
+            </p>
+        </div>
+
+        <!-- Topic 1 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                1. What is React? (Declarative vs. Imperative, SPA concept)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>React is an open-source JavaScript library for building user interfaces. It uses a declarative paradigm and is primarily used to build Single Page Applications (SPAs).</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Declarative:</strong> You tell React <em>what</em> the UI should look like based on the current state. React automatically figures out <em>how</em> to update the DOM. This is the opposite of Imperative (Vanilla JS), where you must write step-by-step instructions to select and mutate elements.</li>
+                        <li><strong>Component-Based:</strong> UIs are broken down into isolated, reusable pieces of code (components).</li>
+                        <li><strong>SPA (Single Page Application):</strong> The server sends a single, blank HTML file to the browser. React then takes over, dynamically rendering and swapping out content using JavaScript without ever needing a full page refresh.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// Imperative (Vanilla JS - Step-by-Step)
+const btn = document.createElement('button');
+btn.innerText = 'Click Me';
+btn.addEventListener('click', () => btn.classList.add('active'));
+document.getElementById('root').appendChild(btn);
+
+// Declarative (React - State Driven)
+const Button = () => {
+  const [isActive, setIsActive] = useState(false);
+  // We simply declare WHAT it should look like based on 'isActive'
+  return (
+    &lt;button 
+      className={isActive ? 'active' : ''} 
+      onClick={() => setIsActive(true)}
+    &gt;
+      Click Me
+    &lt;/button&gt;
+  );
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Building complex dashboards (like Jira or Facebook) where multiple UI components need to react to the same underlying data changes without page reloads.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Fluid, app-like user experience; massive code reusability; easier to debug state-driven UI.<br>
+                    <strong>Disadvantages:</strong> Initial load times can be slower (downloading the JS bundle). Out-of-the-box SEO is poor for SPAs (requiring solutions like Next.js).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What is the difference between a Library and a Framework? (Why is React a library?)</strong><br>
+                    <strong>A:</strong> React is strictly a UI <strong>library</strong>. It only handles the view layer (rendering HTML based on state). It does not include built-in routing, HTTP clients, or form validation. A <strong>framework</strong> (like Angular) is a complete ecosystem that dictates how you structure your entire application and provides built-in tools for routing, fetching, and state.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                2. How React Compiles: JSX and Babel/Vite
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>JSX (JavaScript XML) is a syntax extension that looks like HTML but lives inside JavaScript. Because browsers cannot read JSX natively, tools like Babel or Vite's esbuild compile it down to regular JavaScript function calls.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>JSX is purely syntactic sugar. It makes writing React components intuitive.</li>
+                        <li>Historically, a tool called <strong>Babel</strong> was used to transpile (translate) JSX into <code>React.createElement()</code>.</li>
+                        <li>Modern tooling (like Vite) uses faster compilers written in Go or Rust (like esbuild or SWC) to do this transformation in milliseconds.</li>
+                        <li>Since React 17, the new JSX transform automatically imports the necessary compilation functions under the hood, so you no longer need <code>import React from 'react'</code> in every file.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// What you write (JSX):
+const heading = &lt;h1 className="title"&gt;Hello World&lt;/h1&gt;;
+
+// What the compiler (Babel/Vite) turns it into (Vanilla JS):
+// Older React (Pre-v17):
+const heading = React.createElement('h1', { className: 'title' }, 'Hello World');
+
+// Modern React (Post-v17 JSX Transform):
+import { jsx as _jsx } from "react/jsx-runtime";
+const heading = _jsx("h1", { className: "title", children: "Hello World" });</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Any time you write HTML-like tags inside a `.jsx` or `.tsx` file, you are relying on this compilation process.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Visual clarity. You can embed raw JS logic directly into UI markup using curly braces <code>{}</code>.<br>
+                    <strong>Disadvantages:</strong> Requires a build step (webpack/Vite). You cannot just drop a React file into an HTML script tag without compilation (unless using a heavy CDN babel-standalone).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Why do we use `className` instead of `class` in JSX?</strong><br>
+                    <strong>A:</strong> Because JSX is compiled into JavaScript. <code>class</code> is a reserved keyword in JavaScript (used for creating ES6 classes). Therefore, React chose the DOM API property name <code>className</code> to define HTML classes to avoid syntax errors during compilation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                3. The Virtual DOM & The Reconciliation Algorithm (Diffing)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>The Virtual DOM (VDOM) is a lightweight JavaScript object representation of the actual actual DOM. Reconciliation is the process where React compares the new VDOM with the old VDOM (Diffing) to determine the absolute minimum number of DOM updates required.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>The Problem:</strong> Updating the Real DOM directly (repainting the screen, recalculating CSS) is the slowest operation in web development.</li>
+                        <li><strong>The Solution:</strong> When state changes, React creates a completely new Virtual DOM tree.</li>
+                        <li>React then compares (diffs) this new tree against the previous Virtual DOM tree.</li>
+                        <li>It calculates exactly what changed (e.g., "only the text inside this one span changed").</li>
+                        <li>It then updates the <strong>Real DOM</strong> with only those specific changes in a single, efficient batch operation.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// Conceptual representation of a Virtual DOM object
+const vdomNode = {
+  type: 'div',
+  props: { className: 'container' },
+  children: [
+    { type: 'h1', props: {}, children: 'Hello' },
+    // If state updates 'count', only this specific text node changes in the VDOM object
+    { type: 'p', props: {}, children: `Count: ${count}` } 
+  ]
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Typing in a text input inside a massive form. React will only update the specific input field in the real DOM, without re-rendering the hundreds of other elements around it.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Massive performance gains by avoiding expensive, unnecessary real DOM repaints.<br>
+                    <strong>Disadvantages:</strong> Keeping two copies of the UI tree in memory (the current VDOM and the new VDOM) consumes RAM. (Newer frameworks like Svelte avoid VDOM entirely via ahead-of-time compilation).</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: How does React make Diffing an O(n) operation instead of O(n³)?</strong><br>
+                    <strong>A:</strong> Comparing two trees is traditionally very slow. React uses a heuristic algorithm based on two assumptions: <br>1. Two elements of different types (e.g., a <code>&lt;div&gt;</code> turning into an <code>&lt;span&gt;</code>) will produce different trees, so React throws away the old one and rebuilds it completely. <br>2. Developers use the <code>key</code> prop to hint to React which child elements are stable across renders, preventing unnecessary unmounting and remounting of lists.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 4 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                4. React Fiber Architecture
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>React Fiber is the core internal rendering engine introduced in React 16. Its primary superpower is "incremental rendering"—the ability to split rendering work into chunks and spread it out over multiple frames.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Before Fiber (the old Stack Reconciler), when React started rendering a component tree, it could not be stopped. If the tree was huge, the main thread was blocked, causing animations to drop frames (jank).</li>
+                        <li>Fiber breaks the work into units called "fibers".</li>
+                        <li>It acts as a scheduler. It can assign <strong>priorities</strong> to different updates.</li>
+                        <li>For example, typing in an input (user interaction) is high priority. Fetching data in the background is low priority. Fiber can pause the low-priority render, handle the high-priority typing, and then resume the background render.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>// While you rarely touch Fiber directly, React 18 hooks expose its power.
+import { useTransition } from 'react';
+
+const SearchComponent = () => {
+  const [isPending, startTransition] = useTransition();
+  const [query, setQuery] = useState('');
+
+  const handleChange = (e) => {
+    // High Priority: Update the input field immediately
+    setQuery(e.target.value); 
+    
+    // Low Priority: Fiber will pause this heavy list filtering if the user types again
+    startTransition(() => {
+      filterMassiveDataList(e.target.value); 
+    });
+  };
+  // ...
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li>Enables Concurrent Mode features like <code>Suspense</code>, <code>useTransition</code>, and <code>useDeferredValue</code>.</li>
+                        <li>Keeps the application highly responsive even when rendering massive, CPU-intensive data tables.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages:</strong> Non-blocking UI, smoother animations, prioritizing urgent user inputs over background tasks.<br>
+                    <strong>Disadvantages:</strong> Highly complex source code. Developers don't interact with it directly, but bugs in concurrent UI logic can be hard to trace.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: What does it mean that React rendering is "interruptible"?</strong><br>
+                    <strong>A:</strong> Thanks to Fiber, React no longer processes the entire Virtual DOM tree synchronously in one go. If a more urgent task comes into the browser (like an animation frame or a user click), React can pause its rendering work, yield control back to the browser to handle the event, and then pick up the rendering work where it left off.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 5 -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5">
+                5. Component Lifecycle (Class to Functional Shift)
+            </h2>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">1. Definition</h3>
+                    <p class="text-slate-700"><strong>The Component Lifecycle refers to the phases a component goes through: Mounting (creation), Updating (re-rendering), and Unmounting (deletion). Historically managed via specific Class methods, modern React handles this via Functional components and the <code>useEffect</code> hook.</strong></p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">2. Explanation</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Mounting:</strong> The component is placed into the DOM for the first time.</li>
+                        <li><strong>Updating:</strong> The component re-renders because its state or props changed.</li>
+                        <li><strong>Unmounting:</strong> The component is removed from the DOM entirely.</li>
+                        <li>In Class components, you used methods like <code>componentDidMount</code>. In Functional components, you use <code>useEffect</code> to achieve the same timing.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">3. Example Code</h3>
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed"><code>import { useEffect } from 'react';
+
+const FunctionalLifecycle = ({ id }) => {
+
+  useEffect(() => {
+    // 1. MOUNTING Phase (and UPDATING if 'id' changes)
+    console.log(`Setting up subscription for id: ${id}`);
+    const connection = createConnection(id);
+    connection.connect();
+
+    // 2. UNMOUNTING Phase (Cleanup function)
+    return () => {
+      console.log(`Cleaning up subscription for id: ${id}`);
+      connection.disconnect();
+    };
+    
+  }, [id]); // Dependency array dictates when the UPDATE phase occurs
+
+  return &lt;div&gt;Listening to {id}&lt;/div&gt;;
+};</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">4. Real-Time Scenarios & Usages</h3>
+                    <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                        <li><strong>Mount:</strong> Fetching initial user data from an API when a dashboard loads.</li>
+                        <li><strong>Update:</strong> Refetching that data when the user selects a different date range.</li>
+                        <li><strong>Unmount:</strong> Removing event listeners (like scroll or resize tracking) when navigating to a different page to prevent memory leaks.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">5. Advantages & Disadvantages</h3>
+                    <p class="text-slate-700"><strong>Advantages of Functional Shift:</strong> It co-locates related logic. In Class components, setup was in <code>DidMount</code> and teardown in <code>WillUnmount</code>. Now, setup and teardown for a specific feature exist inside the exact same <code>useEffect</code>.<br>
+                    <strong>Disadvantages:</strong> The mental model of <code>useEffect</code> dependencies can be challenging to grasp compared to explicit lifecycle methods.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2 mb-2">⚡ Interview Corner</h3>
+                    <p class="text-amber-800"><strong>Q: Exactly when does the cleanup function (the return statement inside useEffect) run?</strong><br>
+                    <strong>A:</strong> It runs at two distinct times: <br>1. Just before the component unmounts from the screen (classic teardown). <br>2. <strong>Before the next effect runs</strong> on a re-render. If a dependency changes, React first runs the cleanup function from the <em>previous</em> render to wipe the slate clean, and then runs the new setup function.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

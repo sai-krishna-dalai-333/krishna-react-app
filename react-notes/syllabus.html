@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Dalai Sai Krishna React.js Masterclass Interactive Roadmap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 100%; 
+            height: 300px; 
+            margin: 0 auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+        .active-module { border-left: 4px solid #3b82f6; background-color: #eff6ff; }
+        .module-card { transition: all 0.2s ease-in-out; cursor: pointer; }
+        .module-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .topic-check:checked + label { text-decoration: line-through; color: #94a3b8; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Navigation / Hero -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center text-white font-bold text-xl">⚛</div>
+                <h1 class="text-xl font-bold text-slate-800 tracking-tight">Dalai Sai Krishna React Masterclass <span class="text-blue-600 font-light">Roadmap</span></h1>
+            </div>
+            <div class="text-sm font-medium text-slate-500">
+                Total Topics: <span id="total-topics-count" class="text-blue-600 font-bold">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Intro Section -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">Curriculum Overview</h2>
+            <p class="text-slate-600 leading-relaxed max-w-3xl">
+                This interactive explorer maps out the comprehensive journey to React mastery. 
+                Derived from the "Ultimate React.js Masterclass" syllabus, it covers everything from 
+                <strong>JavaScript Prerequisites</strong> to <strong>Enterprise Architecture</strong>. 
+                Use the visualizations below to analyze the course load, then navigate through the modules to track your learning path.
+            </p>
+        </section>
+
+        <!-- Analytics Dashboard -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Chart 1: Content Density -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col">
+                <div class="mb-4 border-b border-slate-100 pb-2">
+                    <h3 class="text-lg font-semibold text-slate-800">Module Density Analysis</h3>
+                    <p class="text-xs text-slate-500">Number of key topics per learning module</p>
+                </div>
+                <div class="flex-grow flex items-center justify-center w-full">
+                    <div class="chart-container">
+                        <canvas id="densityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart 2: Category Breakdown -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col">
+                <div class="mb-4 border-b border-slate-100 pb-2">
+                    <h3 class="text-lg font-semibold text-slate-800">Skill Distribution</h3>
+                    <p class="text-xs text-slate-500">Breakdown of curriculum by technical domain</p>
+                </div>
+                <div class="flex-grow flex items-center justify-center w-full">
+                    <div class="chart-container" style="max-width: 400px;">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Split -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Sidebar: Module Navigation -->
+            <div class="lg:col-span-4 space-y-4">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-lg font-bold text-slate-900">Modules</h3>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full border border-slate-200">11 Modules</span>
+                </div>
+                <div id="module-list" class="space-y-3 h-[600px] overflow-y-auto pr-2">
+                    <!-- JS Injected Cards -->
+                </div>
+            </div>
+
+            <!-- Main: Detail View -->
+            <div class="lg:col-span-8">
+                <div id="detail-panel" class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden sticky top-24">
+                    <!-- Dynamic Header -->
+                    <div class="bg-slate-900 text-white p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl font-bold">#<span id="detail-id">1</span></div>
+                        <h2 id="detail-title" class="text-2xl font-bold mb-1 relative z-10">Select a Module</h2>
+                        <p id="detail-desc" class="text-blue-200 text-sm font-medium relative z-10 italic">Click on the left sidebar to explore the syllabus.</p>
+                        
+                        <!-- Added the Notes Button container here -->
+                        <div class="mt-4 flex flex-wrap items-center gap-4 relative z-10">
+                            <div class="flex gap-2" id="detail-tags">
+                                <!-- Tags injected here -->
+                            </div>
+                            <!-- This button will dynamically link to module1.html, module2.html, etc. -->
+                            <a id="read-notes-btn" href="#" class="hidden inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded text-sm font-bold transition-colors shadow-sm border border-blue-400">
+                                📖 Read More
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Topics List -->
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h4 class="text-lg font-semibold text-slate-800 border-l-4 border-blue-500 pl-3">Learning Topics</h4>
+                            <div class="text-sm text-slate-500">
+                                Progress: <span id="progress-text" class="font-bold text-blue-600">0/0</span>
+                            </div>
+                        </div>
+                        
+                        <ul id="topic-list" class="space-y-3">
+                            <!-- Topics injected here -->
+                            <li class="text-slate-400 italic text-center py-8">Select a module to view detailed topics.</li>
+                        </ul>
+
+                        <!-- Action Buttons (Next Module) -->
+                        <div class="mt-6 flex justify-end border-t border-slate-100 pt-4 hidden" id="module-actions">
+                            <button id="next-module-btn" disabled class="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm">
+                                Next Module <span class="text-xl">→</span>
+                            </button>
+                        </div>
+
+                        <!-- Simulated Interview Corner Context -->
+                        <div class="mt-8 bg-amber-50 border border-amber-200 rounded-lg p-4">
+                            <h5 class="text-sm font-bold text-amber-800 mb-2 uppercase tracking-wide flex items-center gap-2">
+                                <span class="text-lg">⚡</span> Interview Focus
+                            </h5>
+                            <p id="interview-note" class="text-sm text-amber-900">
+                                Explore the modules to see specific interview focus areas inferred from the syllabus structure.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm">&copy; Dalai Sai Krishna Notes. Based on the "Ultimate React.js Masterclass" document.</p>
+        </div>
+    </footer>
+
+    <!-- LOGIC -->
+    <script>
+        // --- DATA STORE ---
+        const syllabusData = [
+            {
+                id: 1,
+                title: "JavaScript Prerequisites",
+                desc: "The core JS concepts every React developer must master.",
+                category: "Fundamentals",
+                topics: [
+                    "let, const, and Scope (Closures in React)",
+                    "Arrow Functions and this context",
+                    "Template Literals and Object/Array Destructuring",
+                    "Spread (...) and Rest Operators",
+                    "High-Order Array Methods (map, filter, reduce, find)",
+                    "Promises, async/await, and Error Handling (try/catch)",
+                    "Modules (import/export)",
+                    "Short-circuit evaluation (&&, ||, ??) and Optional Chaining (?.)"
+                ],
+                interviewFocus: "Closures and async operations are the most common failure points in interviews."
+            },
+            {
+                id: 2,
+                title: "React Fundamentals & 'Under the Hood'",
+                desc: "How React actually works.",
+                category: "Core React",
+                topics: [
+                    "What is React? (Declarative vs. Imperative, SPA concept)",
+                    "How React Compiles: JSX and Babel/Vite",
+                    "The Virtual DOM & The Reconciliation Algorithm (Diffing)",
+                    "React Fiber Architecture (Brief overview)",
+                    "Component Lifecycle (Class to Functional shift)"
+                ],
+                interviewFocus: "Expect deep dives on Virtual DOM diffing and the Reconciliation process."
+            },
+            {
+                id: 3,
+                title: "Basic Coding & Component Architecture",
+                desc: "Building the UI.",
+                category: "Core React",
+                topics: [
+                    "Functional Components vs. Class Components",
+                    "JSX Rules and Best Practices",
+                    "props (Passing data, Prop drilling, children prop)",
+                    "state (Conceptual overview, difference from props)",
+                    "Conditional Rendering (Ternary, &&, early returns)",
+                    "Looping in React (Lists & keys)",
+                    "Event Handling in React (Synthetic Events)"
+                ],
+                interviewFocus: "Why is the 'key' prop critical in lists? (Performance & State stability)."
+            },
+            {
+                id: 4,
+                title: "The Hooks Ecosystem (In-Depth)",
+                desc: "The heart of modern React.",
+                category: "Core React",
+                topics: [
+                    "useState: State management, async updates",
+                    "useEffect: Side effects, dependencies, cleanup",
+                    "useRef: DOM manipulation, persisting values",
+                    "useContext: Avoiding prop drilling",
+                    "useReducer: Complex state logic",
+                    "useMemo: Caching calculations",
+                    "useCallback: Caching functions",
+                    "useLayoutEffect: Synchronous DOM mutations",
+                    "Custom Hooks: Reusable logic",
+                    "React 18+ Hooks: useTransition, useDeferredValue"
+                ],
+                interviewFocus: "Dependency arrays in useEffect and the difference between useMemo and useCallback."
+            },
+            {
+                id: 5,
+                title: "Component Patterns & Modularity",
+                desc: "Writing scalable, enterprise-grade code.",
+                category: "Patterns",
+                topics: [
+                    "Folder Structure & Clean Architecture",
+                    "Controlled vs. Uncontrolled Components",
+                    "Higher-Order Components (HOCs) vs. Custom Hooks",
+                    "Error Boundaries",
+                    "Portals (Modals/Tooltips)"
+                ],
+                interviewFocus: "Designing scalable folder structures and handling errors gracefully."
+            },
+            {
+                id: 6,
+                title: "Routing & Navigation",
+                desc: "Managing URLs and pages.",
+                category: "Ecosystem",
+                topics: [
+                    "React Router DOM (v6/v7) Setup",
+                    "Routes, Route, Link, NavLink",
+                    "Dynamic Routing (useParams) & Query Params",
+                    "Programmatic Navigation (useNavigate)",
+                    "Protected Routes (Authentication)",
+                    "Layout Routes and Nested Routing"
+                ],
+                interviewFocus: "How to implement Protected Routes for authentication flows."
+            },
+            {
+                id: 7,
+                title: "Advanced Data Fetching & Axios",
+                desc: "Communicating with the backend.",
+                category: "Ecosystem",
+                topics: [
+                    "fetch API vs. axios",
+                    "Setting up Axios Client (Base URL, headers)",
+                    "Axios Interceptors (Request & Response)",
+                    "Handling JWT Tokens (Refreshes)",
+                    "Error handling best practices"
+                ],
+                interviewFocus: "Handling 401 Unauthorized errors and Token Refresh patterns using Interceptors."
+            },
+            {
+                id: 8,
+                title: "Server State Management (React Query)",
+                desc: "Caching and synchronizing server data.",
+                category: "Ecosystem",
+                topics: [
+                    "What is React Query & why do we need it?",
+                    "Setting up QueryClientProvider",
+                    "useQuery: Fetching, caching, stale time",
+                    "useMutation: Creating/Updating data",
+                    "Query Invalidation",
+                    "Integrating Axios with React Query"
+                ],
+                interviewFocus: "Difference between Client State (Redux) and Server State (React Query)."
+            },
+            {
+                id: 9,
+                title: "Global Client State (Redux Toolkit)",
+                desc: "Managing complex global state.",
+                category: "Ecosystem",
+                topics: [
+                    "useContext vs. Redux",
+                    "Redux Core vs. Redux Toolkit (RTK)",
+                    "RTK Store setup (configureStore)",
+                    "Creating Slices (createSlice)",
+                    "useSelector and useDispatch",
+                    "Asynchronous Redux (createAsyncThunk)"
+                ],
+                interviewFocus: "Flux architecture and when to choose Redux over Context API."
+            },
+            {
+                id: 10,
+                title: "Performance Optimization",
+                desc: "Making React fast.",
+                category: "Advanced",
+                topics: [
+                    "Code Splitting & Lazy Loading (Suspense)",
+                    "Memoization deep-dive (React.memo)",
+                    "Understanding unnecessary re-renders"
+                ],
+                interviewFocus: "Identifying and fixing performance bottlenecks using React DevTools."
+            },
+            {
+                id: 11,
+                title: "Enterprise Forms",
+                desc: "Handling complex inputs.",
+                category: "Ecosystem",
+                topics: [
+                    "Why vanilla React forms get messy",
+                    "React Hook Form introduction"
+                ],
+                interviewFocus: "Controlled vs Uncontrolled components in the context of form performance."
+            }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            activeModuleId: 1, // Default to first module
+            completedTopics: new Set() // Store IDs of checked topics
+        };
+
+        // --- DOM ELEMENTS ---
+        const els = {
+            moduleList: document.getElementById('module-list'),
+            detailTitle: document.getElementById('detail-title'),
+            detailDesc: document.getElementById('detail-desc'),
+            detailId: document.getElementById('detail-id'),
+            detailTags: document.getElementById('detail-tags'),
+            readNotesBtn: document.getElementById('read-notes-btn'), // Grab the new Notes button
+            topicList: document.getElementById('topic-list'),
+            progressText: document.getElementById('progress-text'),
+            totalTopicsCount: document.getElementById('total-topics-count'),
+            interviewNote: document.getElementById('interview-note'),
+            densityChart: document.getElementById('densityChart'),
+            distributionChart: document.getElementById('distributionChart'),
+            moduleActions: document.getElementById('module-actions'),
+            nextModuleBtn: document.getElementById('next-module-btn')
+        };
+
+        // --- INITIALIZATION ---
+        function init() {
+            renderCharts();
+            renderModuleList();
+            loadModuleDetail(state.activeModuleId);
+            updateTotalStats();
+        }
+
+        // --- CHART RENDERING ---
+        function renderCharts() {
+            // Data Prep
+            const labels = syllabusData.map(m => `Mod ${m.id}`);
+            const dataCounts = syllabusData.map(m => m.topics.length);
+            
+            // Category Data
+            const categories = {};
+            syllabusData.forEach(m => {
+                categories[m.category] = (categories[m.category] || 0) + m.topics.length;
+            });
+
+            // 1. Density Chart (Bar)
+            new Chart(els.densityChart, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Topics per Module',
+                        data: dataCounts,
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4,
+                        maxBarThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 2. Distribution Chart (Doughnut)
+            new Chart(els.distributionChart, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#6366f1'], // Amber, Blue, Emerald, Indigo
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'right', labels: { usePointStyle: true, font: { family: 'Inter', size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function updateTotalStats() {
+            const total = syllabusData.reduce((acc, curr) => acc + curr.topics.length, 0);
+            els.totalTopicsCount.textContent = total;
+        }
+
+        function renderModuleList() {
+            els.moduleList.innerHTML = '';
+            syllabusData.forEach(mod => {
+                const isActive = mod.id === state.activeModuleId;
+
+                // 1. Create just a standard div for the card (Removed the broken <a> wrapper)
+                const card = document.createElement('div');
+                card.className = `module-card p-4 rounded-lg border ${isActive ? 'border-blue-200 active-module' : 'border-slate-200 bg-white hover:border-blue-300'} relative cursor-pointer`;
+
+                // 2. Clicking the card itself updates the inline detail panel ONLY
+                card.onclick = () => {
+                    state.activeModuleId = mod.id;
+                    renderModuleList(); 
+                    loadModuleDetail(mod.id);
+                };
+
+                // 3. The exact relative path links (module1.html, module2.html) are applied here
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider ${isActive ? 'text-blue-600' : 'text-slate-400'}">Module ${mod.id}</span>
+                        <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded">${mod.topics.length} Topics</span>
+                    </div>
+                    <h4 class="font-semibold text-sm ${isActive ? 'text-slate-900' : 'text-slate-700'} mb-3">${mod.title}</h4>
+                    <div class="flex items-center justify-between border-t border-slate-100 pt-3 mt-1">
+                        <span class="text-xs text-slate-500">View Topics 👉</span>
+                        <a href="./module${mod.id}.html" onclick="event.stopPropagation()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1.5 rounded border border-blue-200 font-bold transition-colors">
+                            📖 Read More
+                        </a>
+                    </div>
+                `;
+
+                els.moduleList.appendChild(card);
+            });
+        }
+
+        function loadModuleDetail(id) {
+            const mod = syllabusData.find(m => m.id === id);
+            if (!mod) return;
+
+            // Animate transition (simple fade)
+            const panel = document.getElementById('detail-panel');
+            panel.classList.remove('opacity-100');
+            panel.classList.add('opacity-90');
+            setTimeout(() => { panel.classList.remove('opacity-90'); panel.classList.add('opacity-100'); }, 150);
+
+            // Update Header
+            els.detailTitle.textContent = mod.title;
+            els.detailDesc.textContent = mod.desc;
+            els.detailId.textContent = mod.id;
+            
+            // Update Tags
+            els.detailTags.innerHTML = `
+                <span class="px-2 py-1 rounded bg-white/20 text-white text-xs font-semibold backdrop-blur-sm border border-white/10">${mod.category}</span>
+                <span class="px-2 py-1 rounded bg-white/20 text-white text-xs font-semibold backdrop-blur-sm border border-white/10">${mod.topics.length} Concepts</span>
+            `;
+
+            // Make sure the big button in the header dynamically links to the specific HTML file
+            if(els.readNotesBtn) {
+                els.readNotesBtn.href = `./module${mod.id}.html`;
+                els.readNotesBtn.classList.remove('hidden');
+            }
+
+            // Update Interview Note
+            els.interviewNote.textContent = mod.interviewFocus;
+
+            // Show Action Buttons
+            els.moduleActions.classList.remove('hidden');
+
+            // Setup Next Button logic
+            const nextModuleId = mod.id + 1;
+            const hasNextModule = syllabusData.some(m => m.id === nextModuleId);
+            
+            if (hasNextModule) {
+                els.nextModuleBtn.innerHTML = 'Next Module <span class="text-xl">→</span>';
+                els.nextModuleBtn.onclick = () => {
+                    state.activeModuleId = nextModuleId;
+                    renderModuleList();
+                    loadModuleDetail(nextModuleId);
+                    // Scroll sidebar to new active item
+                    if(els.moduleList.children[nextModuleId-1]) {
+                        els.moduleList.children[nextModuleId-1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                };
+            } else {
+                els.nextModuleBtn.innerHTML = 'Finish Course 🎉';
+                els.nextModuleBtn.onclick = () => alert('Congratulations! You completed the entire syllabus!');
+            }
+
+            // Render Topics
+            els.topicList.innerHTML = '';
+            let checkedCount = 0;
+
+            mod.topics.forEach((topic, index) => {
+                const uniqueId = `m${mod.id}-t${index}`;
+                const isChecked = state.completedTopics.has(uniqueId);
+                if(isChecked) checkedCount++;
+
+                const li = document.createElement('li');
+                li.className = "flex items-start gap-3 p-3 rounded hover:bg-slate-50 transition-colors group";
+                li.innerHTML = `
+                    <div class="pt-1">
+                        <input type="checkbox" id="${uniqueId}" class="topic-check w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer" ${isChecked ? 'checked' : ''}>
+                    </div>
+                    <label for="${uniqueId}" class="text-sm text-slate-700 leading-relaxed cursor-pointer select-none group-hover:text-slate-900 transition-colors">
+                        ${topic}
+                    </label>
+                `;
+                
+                // Add event listener for checkbox
+                const checkbox = li.querySelector('input');
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        state.completedTopics.add(uniqueId);
+                    } else {
+                        state.completedTopics.delete(uniqueId);
+                    }
+                    updateProgressText(mod.topics.length);
+                });
+
+                els.topicList.appendChild(li);
+            });
+
+            updateProgressText(mod.topics.length);
+        }
+
+        function updateProgressText(total) {
+            // Count checked items specifically for the CURRENT active module
+            let currentModuleChecked = 0;
+            const prefix = `m${state.activeModuleId}-`;
+            state.completedTopics.forEach(key => {
+                if (key.startsWith(prefix)) currentModuleChecked++;
+            });
+            els.progressText.textContent = `${currentModuleChecked}/${total}`;
+
+            // Enable/Disable Next button based on completion
+            if (currentModuleChecked === total && total > 0) {
+                els.nextModuleBtn.disabled = false;
+                els.nextModuleBtn.classList.add('animate-pulse'); // Add a little visual cue
+                setTimeout(() => els.nextModuleBtn.classList.remove('animate-pulse'), 1000);
+            } else {
+                els.nextModuleBtn.disabled = true;
+            }
+        }
+
+        // Start
+        window.addEventListener('DOMContentLoaded', init);
+
+    </script>
+</body>
+</html>
